@@ -1,4 +1,6 @@
 from django.db import models
+from django import forms
+
 # from django.contrib.auth.models import BaseUserManager
 
 # class UserManager(BaseUserManager):
@@ -12,9 +14,10 @@ from django.db import models
 #         user = self.model(username=username, email=email, dob=dob)
 #         user.set_password(password)
 
-class User(models.Model):
+class User(models.Model, forms.ModelForm):
     email = models.EmailField()
     dateOfBirth = model.DateTimeField()
+    password = forms.CharField(widget=forms.PasswordInput)
 
 class Item(models.Model):
     title = models.TextField()
