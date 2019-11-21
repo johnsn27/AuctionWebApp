@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container pt-5">
+    <form method="POST" id="post-form">
+        {% csrf_token %}
+        <div class="form-group">
+        <label for="exampleInputEmail1">Email</label>
+        <input type="text" class="form-control" id="email" placeholder="Email">
+        </div>
+        <div class="form-group">
+                <label for="exampleInputEmail1">Date Of Birth</label>
+                <textarea class="form-control" id="dateOfBirth" placeholder="Date Of Birth"></textarea>
+        </div>
+        <div class="form-group">
+                <label for="exampleInputEmail1">Password</label>
+                <input type="email" class="form-control" id="password" placeholder="Password"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="/">Back to index</a>
+    </form>    
+    </div>
+</div>
+<script>
+    $(document).on('submit', '#post-form',function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:'{% url "auctionsiteapp:createuser" %}',
+            data:{
+                first_name:$('#email').val(),
+                last_name:$('#dateOfBirth').val(),
+                email:$('#password').val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+            },
+            success:function(json){
+                document.getElementById("post-form").reset();
+            },
+            error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+        });
+    });
+</script>
+{% endblock %}
