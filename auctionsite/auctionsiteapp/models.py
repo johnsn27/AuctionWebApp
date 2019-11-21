@@ -14,10 +14,10 @@ from django import forms
 #         user = self.model(username=username, email=email, dob=dob)
 #         user.set_password(password)
 
-class User(forms.ModelForm):
-    email = forms.EmailField()
-    dateOfBirth = forms.DateTimeField()
-    password = forms.CharField(widget=forms.PasswordInput)
+class User(models.Model):
+    email = models.EmailField()
+    dateOfBirth = models.DateTimeField()
+    password = models.CharField(max_length=50)
 
 class Item(models.Model):
     title = models.TextField()
