@@ -1,23 +1,25 @@
-from django.http import JsonResponse
-from django.shortcuts import render
-from chocoapp.models import Chocolate, Flavour
-from django.http import QueryDict
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse, HttpResponse
+from .models import User
+
 
 def login(request):
-    posts = Journalist.objects.all()
+    posts = User.objects.all()
     response_data = {}
-    if request.POST.get(‘action’) == ‘post’:
-        first_name = request.POST.get(‘first_name’)
-        last_name = request.POST.get(‘last_name’)
-        email = request.POST.get(‘email’)
-        response_data[‘first_name’] = first_name
-        response_data[‘last_name’] = last_name
-        response_data[‘email’] = email
-        Journalist.objects.create(
-            first_name=first_name,
-            last_name=last_name,
+    if request.POST.get('action') == 'post':
+        email = request.POST.get('email')
+        dateOfBirth = request.POST.get('dateOfBirth')
+        password = request.POST.get('password')
+        response_data['email'] = email
+        response_data['dateOfBirth'] = dateOfBirth
+        response_data['password'] = password
+        User.objects.create(
             email=email,
+            dateOfBirth=dateOfBirth,
+            password=password
         )
         return JsonResponse(response_data)
-    return render(request, ‘create_journalist.html’, {‘posts’: posts})
-    })
+    return render(request, 'create_user.html', {'posts': posts})
