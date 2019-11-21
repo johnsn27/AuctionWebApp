@@ -2,8 +2,7 @@ from django.urls import path
 
 from . import views
 
-app_name = 'auctionsite'
+app_name = 'auctionsiteapp'
 urlpatterns = [
-    path('login', views.login, name='login'),
-
-
+    path('createuser', views.login, name="createuser"),
+]
