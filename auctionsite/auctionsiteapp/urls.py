@@ -4,5 +4,7 @@ from . import views
 
 app_name = 'auctionsiteapp'
 urlpatterns = [
-    path('createuser', views.login, name="createuser"),
+    path('createuser', views.createUser, name="createuser"),
+    path('getuser', views.getUser, name="getuser"),
+    path('', views.start, name="start"),
 ]

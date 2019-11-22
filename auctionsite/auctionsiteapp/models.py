@@ -1,5 +1,4 @@
 from django.db import models
-from django import forms
 
 # from django.contrib.auth.models import BaseUserManager
 
@@ -14,7 +13,7 @@ from django import forms
 #         user = self.model(username=username, email=email, dob=dob)
 #         user.set_password(password)
 
-class User(models.Model):
+class SiteUsers(models.Model):
     email = models.EmailField()
     dateOfBirth = models.DateTimeField()
     password = models.CharField(max_length=50)
