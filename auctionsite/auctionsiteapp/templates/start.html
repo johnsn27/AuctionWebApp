@@ -1,16 +1,6 @@
-{% load staticfiles %}
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
 
-<head>
-  <meta charset="utf-8">
-  <title>{% block title %}{% endblock %}</title>
-</head>
-
-<body>
-  <script src="/static/js/jquery-2.2.4.min.js"></script>
-  <a href="http://127.0.0.1:8000/getuser">getUsers</a>
-  <a href="http://127.0.0.1:8000/createuser">createUser</a>
-</body>
-
-</html>
+{% block content %}
+<a href="http://127.0.0.1:8000/getuser">getUsers</a>
+<a href="http://127.0.0.1:8000/createuser">createUser</a>
+{% endblock %}
