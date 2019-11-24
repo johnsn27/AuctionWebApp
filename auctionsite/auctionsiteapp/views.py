@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponse
-from .models import SiteUsers
+from .models import SiteUsers, Item
 
 def start(request):
     users = SiteUsers.objects.order_by('-id')[:5]
@@ -37,3 +37,10 @@ def createUser(request):
         )
         return JsonResponse(response_data)
     return render(request, 'create_user.html', {'posts': posts})
+
+def viewListings(request):
+    items = Item.objects.objects.all()
+    context = {
+        'items': items,
+    }
+    return render(request, 'listings.html', {'items': items})
