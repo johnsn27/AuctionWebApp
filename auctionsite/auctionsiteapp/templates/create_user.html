@@ -28,9 +28,9 @@
             type:'POST',
             url:'{% url "auctionsiteapp:createuser" %}',
             data:{
-                first_name:$('#email').val(),
-                last_name:$('#dateOfBirth').val(),
-                email:$('#password').val(),
+                email:$('#email').val(),
+                dateOfBirth:$('#dateOfBirth').val(),
+                password:$('#password').val(),
                 csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
                 action: 'post'
             },
