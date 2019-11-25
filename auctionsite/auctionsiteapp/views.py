@@ -19,10 +19,15 @@ from .models import Item
 
 from auctionsiteapp.forms import SignUpForm
 
+class HomePageView(ListView):
+    model = Item
+    template_name = 'get_items.html'
+
 class CreatePostView(CreateView): 
     model = Item
     form_class = PostItemForm
     template_name = 'post_item.html'
+    success_url = reverse_lazy('')
 
 def start(request):
     users = SiteUsers.objects.order_by('-id')[:5]
