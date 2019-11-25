@@ -15,7 +15,7 @@ from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy 
 from django.db.models import Q
 
-from .forms import PostItemForm 
+from .forms import PostItemForm
 from .models import Item
 
 from auctionsiteapp.forms import SignUpForm
