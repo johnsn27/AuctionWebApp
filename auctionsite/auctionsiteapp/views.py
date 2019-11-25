@@ -11,10 +11,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, CreateView 
-from django.urls import reverse_lazy 
+from django.views.generic import ListView, CreateView
+from django.urls import reverse_lazy
 
-from .forms import PostItemForm 
+from .forms import PostItemForm
 from .models import Item
 
 from auctionsiteapp.forms import SignUpForm
@@ -23,7 +23,7 @@ class HomePageView(ListView):
     model = Item
     template_name = 'get_items.html'
 
-class CreatePostView(CreateView): 
+class CreatePostView(CreateView):
     model = Item
     form_class = PostItemForm
     template_name = 'post_item.html'
