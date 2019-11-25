@@ -1,9 +1,18 @@
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from .models import SiteUsers, Item
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login, authenticate
+from django.shortcuts import render, redirect
+
+from auctionsiteapp.forms import SignUpForm
 
 def start(request):
     users = SiteUsers.objects.order_by('-id')[:5]
@@ -11,6 +20,21 @@ def start(request):
         'posts': users,
     }
     return render(request, 'start.html', context)
+
+def signup(request):
+    users = SiteUsers.objects.order_by('-id')[:5]
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return render(request, 'start.html', {'users': users})
+    else:
+        form = SignUpForm()
+    return render(request, 'signup.html', {'form': form})
 
 def getUser(request):
     users = SiteUsers.objects.order_by('-id')[:5]
@@ -21,22 +45,22 @@ def getUser(request):
 
 
 def createUser(request):
-    posts = SiteUsers.objects.all()
-    response_data = {}
-    if request.POST.get('action') == 'post':
-        email = request.POST.get('email')
-        dateOfBirth = request.POST.get('dateOfBirth')
-        password = request.POST.get('password')
-        response_data['email'] = email
-        response_data['dateOfBirth'] = dateOfBirth
-        response_data['password'] = password
-        SiteUsers.objects.create(
-            email=email,
-            dateOfBirth=dateOfBirth,
-            password=password
-        )
-        return JsonResponse(response_data)
-    return render(request, 'create_user.html', {'posts': posts})
+    users = SiteUsers.objects.order_by('-id')[:5]
+    context = {
+        'users': users,
+    }
+    if request.method == 'POST':
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data.get('username')
+                raw_password = form.cleaned_data.get('password1')
+                user = authenticate(username=username, password=raw_password)
+                login(request, user)
+                return render(request, 'start.html', {'users': users})
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})
 
 def viewListings(request):
     items = Item.objects.objects.all()
