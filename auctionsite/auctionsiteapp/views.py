@@ -13,6 +13,7 @@ from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView 
 from django.urls import reverse_lazy 
+from django.db.models import Q
 
 from .forms import PostItemForm 
 from .models import Item
@@ -23,11 +24,24 @@ class HomePageView(ListView):
     model = Item
     template_name = 'get_items.html'
 
+class SearchView(ListView):
+    model = Item
+    template_name = 'item_search.html'
+
 class CreatePostView(CreateView): 
     model = Item
     form_class = PostItemForm
     template_name = 'post_item.html'
     success_url = reverse_lazy('')
+
+def items_json(request):
+    if (request.method == 'GET'):
+        query = request.GET.get('query')
+        return JsonResponse({
+            'items': list(Item.objects.filter(title__icontains=query).values())
+        })
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 def start(request):
     users = SiteUsers.objects.order_by('-id')[:5]

@@ -12,5 +12,7 @@ urlpatterns = [
     path('signup', views.signup, name="signup"),
     path('getitems', views.HomePageView.as_view(), name="getitems"),
     path('postitem/', views.CreatePostView.as_view(), name="postitem"),
+    path('search', views.SearchView.as_view(), name="search"),
+    path('items', views.items_json, name='itemsjson'),
     path('', views.start, name="start"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
