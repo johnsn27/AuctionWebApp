@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% if items %}
+  {% if items %}
     <ul>
-    {% for item in items %}
+      {% for item in items %}
         <li>
-            {{ item.title }}
-            <!-- <img src="auctionsiteapp/images/placeholder.png"/> -->
-            <p>{{ item.description }}</p>
-            <p>Ends: {{ item.endDate }}</p>
+          {{ item.title }}
+          <!-- <img src="auctionsiteapp/images/placeholder.png"/> -->
+          <p>{{ item.description }}</p>
+          <p>Ends: {{ item.endDate }}</p>
         </li>
-    {% endfor %}
+      {% endfor %}
     </ul>
-{% else %}
+  {% else %}
     <p>No listings are currently available.</p>
-{% endif %}
+  {% endif %}
     <a href="/">Back to index</a>
 {% endblock %}

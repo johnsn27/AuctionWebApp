@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class SiteUsers(models.Model):
     email = models.EmailField()
     dateOfBirth = models.DateTimeField()
@@ -8,7 +7,6 @@ class SiteUsers(models.Model):
 
     def __str__(self):
         return self.email
-
 
 class Item(models.Model):
     title = models.TextField()
