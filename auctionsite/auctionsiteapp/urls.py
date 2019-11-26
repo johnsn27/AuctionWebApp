@@ -11,6 +11,8 @@ urlpatterns = [
     path('listings', views.viewListings, name="listings"),
     path('signup', views.signup, name="signup"),
     path('getitems', views.HomePageView.as_view(), name="getitems"),
+    path('auction', views.AuctionView.as_view(), name="auction"),
+
     path('postitem/', views.CreatePostView.as_view(), name="postitem"),
     path('search', views.SearchView.as_view(), name="search"),
     path('expiredlistings', views.ExpiredView.as_view(), name="expired"),

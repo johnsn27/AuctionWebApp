@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
                 ('title', models.TextField()),
                 ('description', models.TextField()),
                 ('picture', models.ImageField(upload_to='images/')),
+                ('price', models.DecimalField(max_digits=10, decimal_places=2)),
                 ('endDate', models.DateTimeField()),
             ],
         ),

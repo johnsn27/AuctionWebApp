@@ -36,6 +36,10 @@ class CreatePostView(CreateView):
     template_name = 'post_item.html'
     success_url = reverse_lazy('')
 
+class AuctionView(ListView):
+    model = Item
+    template_name = 'auction.html'
+
 def items_json(request):
     if (request.method == 'GET'):
         query = request.GET.get('query')

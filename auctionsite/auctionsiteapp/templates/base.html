@@ -19,7 +19,7 @@
         </div>
         <ul class="nav navbar-nav navbar-left">
           <li><a href="/">Buy now</a></li>
-          <li><a href="/">Auction</a></li>
+          <li><a href="{% url 'auctionsiteapp:auction' %}">Auction</a></li>
           <li><a href="{% url 'auctionsiteapp:expired' %}">Expired Listings</a></li>
           <li><a href="{% url 'auctionsiteapp:postitem' %}">Post Item</a></li>
           <li><a href="{% url 'auctionsiteapp:search' %}">Search Item</a></li>
