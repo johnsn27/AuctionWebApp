@@ -4,28 +4,55 @@ from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from .models import SiteUsers, Item
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, CreateView
-from django.urls import reverse_lazy
-from .forms import PostItemForm
-from .models import Item
-from auctionsiteapp.forms import SignUpForm
+from django.views.generic import ListView, CreateView 
+from django.urls import reverse_lazy 
+from django.db.models import Q
+from django.utils import timezone
+
+from .forms import PostItemForm, SignUpForm
+from .models import SiteUsers, Item
 
 class HomePageView(ListView):
     model = Item
     template_name = 'get_items.html'
+
+class SearchView(ListView):
+    model = Item
+    template_name = 'item_search.html'
+
+class ExpiredView(ListView):
+    model = Item
+    template_name = 'expired_list.html'
 
 class CreatePostView(CreateView):
     model = Item
     form_class = PostItemForm
     template_name = 'post_item.html'
     success_url = reverse_lazy('')
+
+def items_json(request):
+    if (request.method == 'GET'):
+        query = request.GET.get('query')
+        # expired = request.GET.get('expired')
+        if (query):
+            return JsonResponse({
+                'items': list(Item.objects.filter(
+                    Q(endDate__gt=timezone.now()),
+                    Q(title__icontains=query) | Q(description__icontains=query)
+                ).values())
+            })
+        else:
+            return JsonResponse({
+                'items': list(Item.objects.filter(endDate__lt=timezone.now()).values())
+            })
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 def start(request):
     users = SiteUsers.objects.order_by('-id')[:5]

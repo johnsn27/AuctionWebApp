@@ -1,0 +1,21 @@
+{% extends 'item_list.html' %}
+
+{% block title %}Expired{% endblock %}
+{% block scripts %}
+<script>
+$(() => {
+  $(() => {
+    $.ajax({
+      url: "{% url 'auctionsiteapp:itemsjson' %}",
+      success: (data) => {
+        $("#itemList").empty();
+        for (let i=0; i<data.items.length; i++) {
+          const item = data.items[i];
+          $("#itemList").append(createListItem(item));
+        }
+      }
+    });
+  });
+})
+</script>
+{% endblock %}

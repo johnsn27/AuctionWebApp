@@ -1,0 +1,34 @@
+{% extends 'item_list.html' %}
+
+{% block title %}Search{% endblock %}
+{% block form %}<form id='searchForm'>
+  {% csrf_token %}
+  <input name='query' type='text' placeholder='Search'/>
+  <button id="searchBtn" type="button">
+    Search
+  </button>
+</form>
+{% endblock %}
+{% block scripts %}
+<script>
+$(() => {
+  // Disable enter submitting form
+  $(document).on("keydown", "form", (event) => { 
+    return event.key != "Enter";
+  });
+  $("#searchBtn").click(() => {
+    $.ajax({
+        url: "{% url 'auctionsiteapp:itemsjson' %}",
+        data: $("#searchForm").serializeArray(),
+        success: (data) => {
+          $("#itemList").empty();
+          for (let i=0; i<data.items.length; i++) {
+            const item = data.items[i];
+            $("#itemList").append(createListItem(item));
+          }
+        }
+    });
+  });
+})
+</script>
+{% endblock %}
