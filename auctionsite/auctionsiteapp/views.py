@@ -83,7 +83,6 @@ def getUser(request):
     }
     return render(request, 'get_users.html', context)
 
-
 def createUser(request):
     users = SiteUsers.objects.order_by('-id')[:5]
     context = {
