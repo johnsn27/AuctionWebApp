@@ -4,11 +4,9 @@ from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView 
 from django.urls import reverse_lazy 
@@ -70,6 +68,7 @@ def signup(request):
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
+            user.siteusers.dateOfBirth = form.cleaned_data.get('dateOfBirth')
             login(request, user)
             return render(request, 'start.html', {'users': users})
     else:
@@ -107,3 +106,9 @@ def viewListings(request):
         'items': items,
     }
     return render(request, 'listings.html', {'items': items})
+
+def viewProfile(request):
+    context = {
+        'user': request.user
+    }
+    return render(request, 'profile.html', context)

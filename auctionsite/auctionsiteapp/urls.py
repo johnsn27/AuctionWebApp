@@ -15,5 +15,5 @@ urlpatterns = [
     path('search', views.SearchView.as_view(), name="search"),
     path('expiredlistings', views.ExpiredView.as_view(), name="expired"),
     path('items', views.items_json, name='itemsjson'),
-    path('', views.start, name="start"),
+    path('profile', views.viewProfile, name='profile'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
