@@ -1,14 +1,23 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  {% block form %}{% endblock %}
-    <ul id="itemList"></ul>
-    <script>
-      const createListItem = (data) => {
-        const {title} = data;
-        const formattedDate = Date(data.endDate);
-        return `<li class="media"><img src="media/${data.picture}" alt="${title}" class="img-thumbnail"/><div class="media-body"><h2>${title}</h2>${data.description}<p>Ends: ${formattedDate}</p></div></li>`;
-      };
-    </script>
-  {% block scripts %}{% endblock %}
+<h1>{% block title %}{% endblock %}</h1>
+{% block form %}{% endblock %}
+<ul id="itemList">
+</ul>
+<script>
+  const createListItem = (data) => {
+    const {title} = data;
+    const formattedDate = Date(data.endDate);
+    return `<li class="media" style="maxwidth=50px">
+              <img src="media/${data.picture}" alt="${title}" class="img-thumbnail" style="width:500px"/>
+              <div class="media-body">
+                <h2>${title}</h2>
+                ${data.description}
+                <p>Ends: ${formattedDate}</p>
+              </div>
+            </li>`;
+  };
+</script>
+{% block scripts %}{% endblock %}
 {% endblock %}
