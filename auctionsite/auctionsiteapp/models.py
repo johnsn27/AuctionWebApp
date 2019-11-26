@@ -15,3 +15,6 @@ class Item(models.Model):
     description = models.TextField()
     picture = models.ImageField(upload_to='images/')
     endDate = models.DateTimeField()
+
+    def __str__(self):
+        return self.title
