@@ -8,7 +8,6 @@ urlpatterns = [
     path('', views.start, name="start"),
     path('createuser', views.createUser, name="createuser"),
     path('getuser', views.getUser, name="getuser"),
-    path('listings', views.viewListings, name="listings"),
     path('signup', views.signup, name="signup"),
     path('getitems', views.HomePageView.as_view(), name="getitems"),
     path('postitem/', views.CreatePostView.as_view(), name="postitem"),
