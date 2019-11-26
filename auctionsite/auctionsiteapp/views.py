@@ -104,7 +104,7 @@ def createUser(request):
     return render(request, 'signup.html', {'form': form})
 
 def viewListings(request):
-    items = Item.objects.objects.all()
+    items = Item.objects.all()
     context = {
         'items': items,
     }

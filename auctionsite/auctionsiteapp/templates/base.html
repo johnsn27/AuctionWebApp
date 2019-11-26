@@ -15,11 +15,20 @@
     <nav class="navbar navbar-inverse">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="/"><span class="glyphicon glyphicon-home"></span></a>
+          <a class="navbar-brand" href="{% url 'auctionsiteapp:getitems' %}"><span class="glyphicon glyphicon-home"></span></a>
         </div>
+        <ul class="nav navbar-nav navbar-left">
+          <li><a href="/">Buy now</a></li>
+          <li><a href="/">Auction</a></li>
+          <li><a href="{% url 'auctionsiteapp:expired' %}">Expired Listings</a></li>
+          <li><a href="{% url 'auctionsiteapp:postitem' %}">Post Item</a></li>
+          <li><a href="{% url 'auctionsiteapp:search' %}">Search Item</a></li>
+        </ul>
         <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'auctionsiteapp:getuser' %}">Users</a></li>
           {% if user.is_authenticated %}
             <li><a href="{% url 'password_reset' %}">Reset Password</a></li>
+            <li><a href="{% url 'auctionsiteapp:profile' %}">Account</a></li>
             <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
           {% else %}
             <li><a href="{% url 'auctionsiteapp:signup' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
