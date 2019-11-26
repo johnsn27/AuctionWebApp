@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -68,7 +70,8 @@ def signup(request):
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
-            user.siteusers.dateOfBirth = form.cleaned_data.get('dateOfBirth')
+            dateOfBirth = form.cleaned_data.get('dateOfBirth')
+            SiteUsers.objects.create(user=user, dateOfBirth=dateOfBirth)
             login(request, user)
             return render(request, 'start.html', {'users': users})
     else:
