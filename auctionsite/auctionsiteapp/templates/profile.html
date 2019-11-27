@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  {% if user.is_authenticated %}
-    <h1>{% block title %} Profile{% endblock %}</h1>
-    <p>Hi {{ user.username }}</p>
-    <p>Email: {{ user.email }}</p>
-    <p>Date of Birth: {{ user.siteusers.dateOfBirth }}</p>
+<div class="container">
+  <div class="text-center">
+    {% if user.is_authenticated %}
+      <h1>{% block title %} Profile{% endblock %}</h1>
+      <p>Hi {{ user.username }}</p>
+      <p>Email: {{ user.email }}</p>
+      <p>Date of Birth: {{ user.siteusers.dateOfBirth }}</p>
 
-    <p><a href="{% url 'password_reset' %}">Reset Password</a></p>
-  {% else %}
-    Login to view your profile.
-  {% endif %}
-  <script>
-  </script>
+      <p><a href="{% url 'password_reset' %}">Reset Password</a></p>
+    {% else %}
+      Login to view your profile.
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
