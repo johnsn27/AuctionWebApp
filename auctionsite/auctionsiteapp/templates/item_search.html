@@ -1,13 +1,18 @@
 {% extends 'item_list.html' %}
 
 {% block form %}
-  <form id='searchForm'>
-    {% csrf_token %}
-    <input name='query' type='text' placeholder='Search'/>
-    <button id="searchBtn" type="button">
-      Search
-    </button>
-  </form>
+<div class="container">
+  <div class="text-center">
+    <h1>Search for an Item</h1>
+    <form id='searchForm'>
+      {% csrf_token %}
+      <input name='query' type='text' placeholder='Search'/>
+      <button id="searchBtn" type="button">
+        Search
+      </button>
+    </form>
+  </div>
+</div>
 {% endblock %}
 {% block scripts %}
   <script>
