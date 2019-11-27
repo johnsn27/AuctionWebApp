@@ -2,15 +2,16 @@
 
 {% block content %}
 <div class="container-fluid">
-  <h1 class="text-center">Auction Item</h1>
-  <div align="center"><a href="closedauction"><button>View Closed Auctions</button></a></div>
+  <h1 class="text-center">Closed Auction</h1>
+  <div align="center"><a href="auction"><button>Back to Auctions</button></a></div>
   <div class="row">
       {% for item in object_list %}
       <div class="col-md-3" id='item-list' align="center">
         <h2>{{ item.title }}</h2>
         <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
-        <p>Current bid: £{{item.price}}</p>
+        <p>Finishing bid: £{{item.price}}</p>
         <p>Auction end: {{item.endDate}}</p>
+        <p>Winner: {{ user }}</p>
         <input type="button" onclick="window.location.href = '/put2/{{ item.id }}';" value="Make Bid"/>
       </div>
     {% endfor %}
