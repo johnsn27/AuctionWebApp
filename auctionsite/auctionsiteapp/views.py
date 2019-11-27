@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect, QueryDict
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -141,13 +141,18 @@ def editBid(request):
     put = QueryDict(request.body)
     item_id = put.get('item-id')
     item = Item.objects.get(id=item_id)
-
-    item.price = put.get('item-price')
-    item.save()
+    newPrice = put.get('item-price')
+    error = None
+    if newPrice > item.price:
+        item.price = newPrice
+        item.save()
+    else:
+        error = 'Bid is lower than current price'
 
     return JsonResponse({
         'id': item.id,
-        'price': item.price
+        'price': item.price,
+        'error': error
     })
 
 class put1(ListView):
@@ -159,16 +164,20 @@ class put2(ListView):
     template_name = 'put2.html'
 
 def put3(request, pk):
-    items = Item.objects.order_by('-id')[:5]
-    context = {
-        'items': items,
-    }
-    if request.method != 'PUT':
+    if request.method == 'PUT':
         obj = Item.objects.get(pk=pk)
-        obj.price = request.POST.get('price')
+        newPrice = float(QueryDict(request.body).get('price'))
+        if newPrice > obj.price:
+            obj.price = newPrice
+            obj.save()
+        else:
+            error = 'Bid is lower than current price'
         obj.save()
-        return render(request, 'put2.html', context)
-        # return HttpResponse("Post with pk %s updated" % pk, content_type='application/json')
+        return JsonResponse({
+            'id': obj.id,
+            'price': obj.price,
+            'error': error
+        })
     return HttpResponse("Not a put request")
 
 # def editBid(request, pk):
