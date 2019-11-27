@@ -19,5 +19,9 @@ urlpatterns = [
     path('expiredlistings', views.ExpiredView.as_view(), name="expired"),
     path('items', views.items_json, name='itemsjson'),
     path('profile', views.viewProfile, name='profile'),
-    path('listings', views.viewListings, name="listings")
+    path('listings', views.viewListings, name="listings"),
+    path('put1', views.put1.as_view(), name="put1"),
+    path('put2/<int:pk>', views.put2.as_view(), name="put2"),
+    path('put3/<int:pk>', views.put3, name="put3"),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
