@@ -49,7 +49,11 @@ class AuctionView(ListView):
 def items_json(request):
     if (request.method == 'GET'):
         query = request.GET.get('query')
-        # expired = request.GET.get('expired')
+        expired = request.GET.get('expired')
+        if (expired):
+            items = Item.objects.filter(endDate__lt=timezone.now())
+        else:
+            items = Item.objects.filter(endDate__gt=timezone.now())
         if (query):
             return JsonResponse({
                 'items': list(Item.objects.filter(
@@ -59,7 +63,7 @@ def items_json(request):
             })
         else:
             return JsonResponse({
-                'items': list(Item.objects.filter(endDate__lt=timezone.now()).values())
+                'items': list(items.values())
             })
     else:
         return HttpResponseNotAllowed(['GET'])

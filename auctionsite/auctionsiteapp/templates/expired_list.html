@@ -9,6 +9,7 @@
     $(() => {
       $.ajax({
         url: "{% url 'auctionsiteapp:itemsjson' %}",
+        data: {expired: true},
         success: (data) => {
           $("#itemList").empty();
           for (let i=0; i<data.items.length; i++) {
