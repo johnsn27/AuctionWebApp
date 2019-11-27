@@ -12,7 +12,7 @@ class Item(models.Model):
     title = models.TextField()
     description = models.TextField()
     picture = models.ImageField(upload_to='images/')
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     endDate = models.DateTimeField()
 
     def __str__(self):

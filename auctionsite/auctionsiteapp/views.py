@@ -119,3 +119,25 @@ def viewProfile(request):
         'user': request.user
     }
     return render(request, 'profile.html', context)
+
+
+def editBid(request):
+    put = QueryDict(request.body)
+    item_id = put.get('item-id')
+    item = Item.objects.get(id=item_id)
+
+    item.price = put.get('item-price')
+    item.save()
+
+    return JsonResponse({
+        'id' : item.id,
+        'price' : item.price
+    })
+
+# def editBid(request, pk):
+#     if request.method != 'PUT':
+#         obj = Post.objects.get(pk=pk)
+#         obj.price = request.POST.get('item-price')
+#         obj.save()
+#         return HttpResponse("Post with pk %s updated" % pk, content_type='application/json')
+#     return HttpResponse("Not a put request")

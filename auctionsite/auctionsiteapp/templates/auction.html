@@ -2,12 +2,48 @@
 
 {% block content %}
 <h1>Django Image Uploading</h1>
+
 <ul>
   {% for item in object_list %}
-    <h2>{{ item.title }}</h2>
-    <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
-    <p>{{item.price}}</p>
-    <p>{{item.endDate}}</p>
+    <div id='item-list'>
+      <h2>{{ item.title }}</h2>
+      <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
+      <p>Current bid: £{{item.price}}</p>
+      <p>Auction end: {{item.endDate}}</p>
+    </div>
+
+    <p>Enter bid:</p>
+    <input id="item-price" name="item-price" type=value></input>
+    <button id="bid-btn">Bid</button>
   {% endfor %}
 </ul>
 {% endblock %}
+
+<script>
+  $(document).on('submit', '#bid-btn', function (e) {
+      e.preventDefault();
+      var url = window.location.pathname;
+      var pk = url.substring(url.lastIndexOf('/') + 1);
+      $.ajax({
+          type: 'POST',
+          url: "http://127.0.0.1:8000/editBid/" + pk,
+          data: {
+              price: $('#item-price').val(),
+              csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+              action: 'post'
+          },
+          success: function (json) {
+              document.getElementById("item-list").reset();
+          },
+          error: function (xhr, errmsg, err) {
+              $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
+                  " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+              console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+          }
+      });
+    });
+  </script>
+
+  {% block scripts %}{% endblock %}
+
+
