@@ -4,18 +4,25 @@
 <h1>Django Image Uploading</h1>
 
 <body>
-  <div class="container pt-5">
+  <ul>
+    {% for item in object_list %}
+    <div id='item-list'>
+      <h2>{{ item.title }}</h2>
+      <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
+      <p id="currentbid">Current bid: £{{item.price}}</p>
+      <p>Auction end: {{item.endDate}}</p>
+    </div>
     <form method="POST" id="post-form">
       {% csrf_token %}
-      <div class="form-group">
-        <label for="exampleInputEmail1">Publish Date</label>
-        <input type="text" class="form-control" id="price" placeholder="price"></textarea>
+      <div>
+        <label>Price</label>
+        <input type="text" id="price" placeholder="price"></textarea>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit">Make Bid</button>
       <a href="/auction">Back to auction</a>
     </form>
-  </div>
-
+    {% endfor %}
+  </ul>
 </body>
 
 <script>
@@ -23,17 +30,18 @@
     e.preventDefault();
     var url = window.location.pathname;
     var pk = url.substring(url.lastIndexOf('/') + 1);
+    var priceVal = $('#price').val();
     $.ajax({
       type: 'POST',
       url: "http://127.0.0.1:8000/put3/" + pk,
       data: {
-        price: $('#price').val(),
+        price: priceVal,
         csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
         action: 'post'
       },
-      success: function (json) {
+      success: function (data) {
         document.getElementById("post-form").reset();
-        window.location.href("/auction");
+        $('#currentbid').text('Current bid: £' + parseFloat(priceVal).toFixed(2))
       },
       error: function (xhr, errmsg, err) {
         $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +

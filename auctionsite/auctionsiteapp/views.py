@@ -159,11 +159,16 @@ class put2(ListView):
     template_name = 'put2.html'
 
 def put3(request, pk):
+    items = Item.objects.order_by('-id')[:5]
+    context = {
+        'items': items,
+    }
     if request.method != 'PUT':
         obj = Item.objects.get(pk=pk)
         obj.price = request.POST.get('price')
         obj.save()
-        return HttpResponse("Post with pk %s updated" % pk, content_type='application/json')
+        return render(request, 'put2.html', context)
+        # return HttpResponse("Post with pk %s updated" % pk, content_type='application/json')
     return HttpResponse("Not a put request")
 
 # def editBid(request, pk):
