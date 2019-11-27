@@ -11,7 +11,9 @@ urlpatterns = [
     path('signup', views.signup, name="signup"),
     path('getitems', views.HomePageView.as_view(), name="getitems"),
     path('auction', views.AuctionView.as_view(), name="auction"),
+    path('closedauction', views.ClosedAuctionView.as_view(), name="auctionauction"),
     path('editBid', views.editBid, name="editBid"),
+
 
 
     path('postitem/', views.CreatePostView.as_view(), name="postitem"),

@@ -45,6 +45,10 @@ class AuctionView(ListView):
     model = Item
     template_name = 'auction.html'
 
+class ClosedAuctionView(ListView):
+    model = Item
+    template_name = 'closed-auction.html'
+
 
 def items_json(request):
     if (request.method == 'GET'):
