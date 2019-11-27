@@ -9,16 +9,17 @@
     <div id='item-list'>
       <h2>{{ item.title }}</h2>
       <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
-      <p id="currentbid">Current bid: £{{item.price}}</p>
+      <p>Current bid: £<span id="currentbid">{{item.price}}</span></p>
       <p>Auction end: {{item.endDate}}</p>
     </div>
-    <form method="POST" id="post-form">
+    <form id="post-form">
       {% csrf_token %}
       <div>
         <label>Price</label>
         <input type="text" id="price" placeholder="price"></textarea>
       </div>
       <button type="submit">Make Bid</button>
+      <p id='error'></p>
       <a href="/auction">Back to auction</a>
     </form>
     {% endfor %}
@@ -32,22 +33,25 @@
     var pk = url.substring(url.lastIndexOf('/') + 1);
     var priceVal = $('#price').val();
     $.ajax({
-      type: 'POST',
-      url: "http://127.0.0.1:8000/put3/" + pk,
+      type: 'PUT',
+      url: `/put3/${pk}`,
+      headers: {"X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()},
       data: {
         price: priceVal,
-        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-        action: 'post'
       },
       success: function (data) {
         document.getElementById("post-form").reset();
-        $('#currentbid').text('Current bid: £' + parseFloat(priceVal).toFixed(2))
+        bid = parseFloat(data.price).toFixed(2);
+        if (bid == null) {
+          bid = 0.00;
+        }
+        $('#currentbid').text(bid);
+        if (data.error) {
+          $('#error').text(data.error);
+        } else {
+          $('#error').empty();
+        }
       },
-      error: function (xhr, errmsg, err) {
-        $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: " + errmsg +
-          " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-        console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-      }
     });
   });
 </script>
