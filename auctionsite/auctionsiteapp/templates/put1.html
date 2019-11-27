@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Django Image Uploading</h1>
+
+<ul>
+  {% for item in object_list %}
+    <div id='item-list'>
+      <h2>{{ item.title }}</h2>
+      <li><a href="/put2/{{ item.id }}">{{ item.title }}</a></li>
+      <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
+      <p>Current bid: £{{item.price}}</p>
+      <p>Auction end: {{item.endDate}}</p>
+    </div>
+
+    <p>Enter bid:</p>
+    <input id="item-price" name="item-price" type=value></input>
+    <button id="bid-btn">Bid</button>
+  {% endfor %}
+</ul>
+{% endblock %}

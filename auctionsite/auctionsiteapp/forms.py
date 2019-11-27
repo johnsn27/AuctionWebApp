@@ -16,4 +16,4 @@ class PostItemForm(forms.ModelForm):
     endDate = forms.DateField(initial=datetime.date.today)
     class Meta:
         model = Item
-        fields = ['title', 'description', 'picture', 'endDate']
+        fields = ['title', 'description', 'picture', 'price', 'endDate']
