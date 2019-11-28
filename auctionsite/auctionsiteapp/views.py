@@ -23,16 +23,23 @@ class HomePageView(ListView):
     template_name = 'get_items.html'
 
 
-class ExpiredView(ListView):
-    model = Item
+class ExpiredView(TemplateView):
     template_name = 'expired_list.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(ExpiredView, self).get_context_data(**kwargs)
+        context['siteusers'] = SiteUsers.objects.values()
+        context['items'] = Item.objects.values()
+        context['bids'] = Bid.objects.values()
+        return context
 
-class SellView(CreateView):
+
+class SellView(CreateView): 
     model = Item
     form_class = PostItemForm
     template_name = 'sell_item.html'
     success_url = 'sell'
+
 
 def changeUsername(request):
     if (request.method == 'PUT'):
@@ -41,12 +48,13 @@ def changeUsername(request):
         try:
             User.objects.get(username=newUsername)
             raise ValidationError(('Username in use'), code='NAME_IN_USE')
-        except User.DoesNotExist: 
+        except User.DoesNotExist:
             user.username = newUsername
             user.save()
             return JsonResponse({
                 'username': user.username
             })
+
 
 class BuyView(TemplateView):
     template_name = 'buy-items.html'
@@ -58,12 +66,14 @@ class BuyView(TemplateView):
         context['bids'] = Bid.objects.values()
         return context
 
+
 def items_json(request):
     if (request.method == 'GET'):
         query = request.GET.get('query')
         expired = request.GET.get('expired')
         if (expired):
             items = Item.objects.filter(endDate__lt=timezone.now())
+            bid = Bid.objects.filter(item=items)
         else:
             items = Item.objects.filter(endDate__gt=timezone.now())
         if (query):
@@ -75,7 +85,8 @@ def items_json(request):
             })
         else:
             return JsonResponse({
-                'items': list(items.values())
+                'items': list(items.values()),
+                'bid': list(bid.values())
             })
     else:
         return HttpResponseNotAllowed(['GET'])
@@ -100,6 +111,7 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
+
 
 def createUser(request):
     if request.method == 'POST':
@@ -134,7 +146,7 @@ def editBid(request):
             userId = QueryDict(request.body).get('userid')
             user = SiteUsers.objects.get(id=userId)
             item = Item.objects.get(pk=pk)
-            b = Bid(price=newPrice, user= user, item= item)
+            b = Bid(price=newPrice, user=user, item=item)
             b.save()
             error = None
         else:

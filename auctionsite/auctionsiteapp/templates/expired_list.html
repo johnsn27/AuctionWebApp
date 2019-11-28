@@ -19,6 +19,7 @@
         url: "{% url 'auctionsiteapp:itemsjson' %}",
         data: {expired: true},
         success: (data) => {
+          console.log(data)
           $("#itemList").empty();
           for (let i=0; i<data.items.length; i++) {
             const item = data.items[i];
