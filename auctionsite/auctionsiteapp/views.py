@@ -9,7 +9,6 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect, QueryD
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
 from django.db.models import Q
@@ -39,7 +38,6 @@ class CreatePostView(CreateView):
     form_class = PostItemForm
     template_name = 'post_item.html'
     success_url = reverse_lazy('')
-
 
 class AuctionView(ListView):
     model = Item
@@ -74,15 +72,10 @@ def items_json(request):
 
 
 def start(request):
-    users = SiteUsers.objects.order_by('-id')[:5]
-    context = {
-        'posts': users,
-    }
-    return render(request, 'start.html', context)
+    return render(request, 'start.html')
 
 
 def signup(request):
-    users = SiteUsers.objects.order_by('-id')[:5]
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -93,7 +86,7 @@ def signup(request):
             dateOfBirth = form.cleaned_data.get('dateOfBirth')
             SiteUsers.objects.create(user=user, dateOfBirth=dateOfBirth)
             login(request, user)
-            return render(request, 'start.html', {'users': users})
+            return render(request, 'start.html')
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
@@ -108,10 +101,6 @@ def getUser(request):
 
 
 def createUser(request):
-    users = SiteUsers.objects.order_by('-id')[:5]
-    context = {
-        'users': users,
-    }
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -120,7 +109,7 @@ def createUser(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return render(request, 'start.html', {'users': users})
+            return render(request, 'start.html')
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
@@ -130,10 +119,6 @@ def viewProfile(request):
         'user': request.user
     }
     return render(request, 'profile.html', context)
-
-class put1(ListView):
-    model = Item
-    template_name = 'put1.html'
 
 def editBid(request):
     if request.method == 'PUT':
