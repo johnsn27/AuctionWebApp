@@ -34,6 +34,17 @@ class SellView(CreateView):
     template_name = 'sell_item.html'
     success_url = 'sell'
 
+class WonView(ListView):
+    model = Item
+    template_name = 'won_items.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(WonView, self).get_context_data(**kwargs)
+        context['siteusers'] = SiteUsers.objects.values()
+        context['items'] = Item.objects.values()
+        context['bids'] = Bid.objects.values()
+        return context
+
 def changeUsername(request):
     if (request.method == 'PUT'):
         newUsername = QueryDict(request.body).get('newUsername')
@@ -41,7 +52,7 @@ def changeUsername(request):
         try:
             User.objects.get(username=newUsername)
             raise ValidationError(('Username in use'), code='NAME_IN_USE')
-        except User.DoesNotExist: 
+        except User.DoesNotExist:
             user.username = newUsername
             user.save()
             return JsonResponse({
@@ -49,7 +60,7 @@ def changeUsername(request):
             })
 
 class BuyView(TemplateView):
-    template_name = 'buy-items.html'
+    template_name = 'buy_items.html'
 
     def get_context_data(self, **kwargs):
         context = super(BuyView, self).get_context_data(**kwargs)

@@ -16,6 +16,8 @@ urlpatterns = [
     path('items', views.items_json, name='itemsjson'),
     path('profile', views.viewProfile, name='profile'),
     path('editBid', views.editBid, name="editBid"),
-    path('changeusername', views.changeUsername, name="changeUsername")
+    path('changeusername', views.changeUsername, name="changeUsername"),
+    path('won', views.WonView.as_view(), name="won")
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
