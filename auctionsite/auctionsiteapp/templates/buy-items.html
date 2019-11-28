@@ -4,7 +4,10 @@
 <div class="container-fluid">
   <h1 class="text-center">Buy Items</h1>
   <div class="row">
-      {% for item in object_list %}
+      {% for item in items %}
+      {% if user.is_authenticated %}
+        <p>{{ user.id }}</p>
+      {% endif %}
       <div class="col-md-3 text-center" id='item-list'>
         <h2>{{ item.title }}</h2>
         <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
@@ -14,7 +17,7 @@
           {% csrf_token %}
           <div>
             <label>Price</label>
-            <input id="price{{ item.id}}" type="text" name="price" placeholder="price">
+            <input id="price{{ item.id }}" type="text" name="price" placeholder="price">
           </div>
         </form>
         <button class="bidButton" id="bidButton{{ item.id }}">Submit Bid</button>

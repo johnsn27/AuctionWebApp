@@ -9,7 +9,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect, QueryD
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, TemplateView
 from django.urls import reverse_lazy
 from django.db.models import Q
 from django.utils import timezone
@@ -40,8 +40,13 @@ class SellView(CreateView):
     success_url = reverse_lazy('')
 
 class BuyView(ListView):
-    model = Item
     template_name = 'buy-items.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(AuctionView, self).get_context_data(**kwargs)
+        context['siteusers'] = SiteUsers.objects.all()
+        context['items'] = Item.objects.all()
+        return context
 
 def items_json(request):
     if (request.method == 'GET'):
@@ -100,11 +105,13 @@ def createUser(request):
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
 
+
 def viewProfile(request):
     context = {
         'user': request.user
     }
     return render(request, 'profile.html', context)
+
 
 def editBid(request):
     if request.method == 'PUT':
