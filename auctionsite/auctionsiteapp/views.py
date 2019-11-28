@@ -7,6 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect, QueryDict
 from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView
@@ -70,6 +72,19 @@ def items_json(request):
     else:
         return HttpResponseNotAllowed(['GET'])
 
+def changeUsername(request):
+    if (request.method == 'PUT'):
+        newUsername = QueryDict(request.body).get('newUsername')
+        user = User.objects.get(pk=request.user.id)
+        try:
+            User.objects.get(username=newUsername)
+            raise ValidationError(('Username in use'), code='NAME_IN_USE')
+        except User.DoesNotExist: 
+            user.username = newUsername
+            user.save()
+            return JsonResponse({
+                'username': user.username
+            })
 
 def start(request):
     return render(request, 'start.html')
@@ -98,21 +113,6 @@ def getUser(request):
         'users': users,
     }
     return render(request, 'get_users.html', context)
-
-
-def createUser(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return render(request, 'start.html')
-    else:
-        form = UserCreationForm()
-    return render(request, 'signup.html', {'form': form})
 
 def viewProfile(request):
     context = {
