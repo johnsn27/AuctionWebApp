@@ -81,14 +81,13 @@
           userid: userId
         },
         success: (data) => {
-          console.log(data)
-          bid = parseFloat(data.price).toFixed(2);
-          $(`#currentbid${pk}`).text(bid);
-          if (data.error) {
-            $(`#error${pk}`).text(data.error);
-          } else {
-            $(`#error${pk}`).empty('&nbsp');
-          }
+          // bid = parseFloat(data.price).toFixed(2);
+          // $(`#currentbid${pk}`).text(bid);
+          // if (data.error) {
+          //   $(`#error${pk}`).text(data.error);
+          // } else {
+          //   $(`#error${pk}`).empty('&nbsp');
+          // }
         }
       })
     })

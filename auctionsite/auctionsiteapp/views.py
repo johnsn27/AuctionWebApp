@@ -139,7 +139,9 @@ def editBid(request):
             error = None
         else:
             error = 'Bid is lower than current price'
-        return HttpResponse(" a PUT request")
+        return JsonResponse({
+            'price': b.price,
+        })
     return HttpResponse("Not a PUT request")
 
 # highest_bid = Bid.objects.filter(
