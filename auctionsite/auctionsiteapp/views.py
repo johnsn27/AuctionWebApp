@@ -11,7 +11,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, TemplateView
 from django.urls import reverse_lazy
 from django.db.models import Q
 from django.utils import timezone
@@ -35,20 +35,21 @@ class ExpiredView(ListView):
     template_name = 'expired_list.html'
 
 
-class CreatePostView(CreateView):
+class SellView(CreateView):
     model = Item
     form_class = PostItemForm
-    template_name = 'post_item.html'
+    template_name = 'sell_item.html'
     success_url = reverse_lazy('')
 
-class AuctionView(ListView):
+class BuyView(ListView):
     model = Item
-    template_name = 'auction.html'
+    template_name = 'buy-items.html'
 
-class ClosedAuctionView(ListView):
-    model = Item
-    template_name = 'closed-auction.html'
-
+    def get_context_data(self, **kwargs):
+        context = super(BuyView, self).get_context_data(**kwargs)
+        context['siteusers'] = SiteUsers.objects.all()
+        context['items'] = Item.objects.all()
+        return context
 
 def items_json(request):
     if (request.method == 'GET'):
@@ -106,19 +107,27 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
+def createUser(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return render(request, 'start.html')
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})
 
-def getUser(request):
-    users = SiteUsers.objects.order_by('-id')[:5]
-    context = {
-        'users': users,
-    }
-    return render(request, 'get_users.html', context)
 
 def viewProfile(request):
     context = {
         'user': request.user
     }
     return render(request, 'profile.html', context)
+
 
 def editBid(request):
     if request.method == 'PUT':
