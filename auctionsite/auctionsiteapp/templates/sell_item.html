@@ -6,7 +6,25 @@
       <h1>Create Post Page</h1>
       <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form.non_field_errors }}
+
+        {% for hidden_field in form.hidden_fields %}
+          {{ hidden_field.errors }}
+          {{ hidden_field }}
+        {% endfor %}
+
+        <table align="center">
+          {% for field in form.visible_fields %}
+            <tr>
+              <th>{{ field.label_tag }}</th>
+              <td>
+                {{ field.errors }}
+                {{ field }}
+                {{ field.help_text }}
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
         <button type="submit">Submit New Post</button>
       </form>
     </div>
