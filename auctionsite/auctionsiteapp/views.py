@@ -62,6 +62,7 @@ def items_json(request):
     if (request.method == 'GET'):
         query = request.GET.get('query')
         expired = request.GET.get('expired')
+        bids = list(Bid.objects.values())
         if (expired):
             items = Item.objects.filter(endDate__lt=timezone.now())
         else:
@@ -71,11 +72,13 @@ def items_json(request):
                 'items': list(Item.objects.filter(
                     Q(endDate__gt=timezone.now()),
                     Q(title__icontains=query) | Q(description__icontains=query)
-                ).values())
+                ).values()),
+                'bids': bids
             })
         else:
             return JsonResponse({
-                'items': list(items.values())
+                'items': list(items.values()),
+                'bids': bids
             })
     else:
         return HttpResponseNotAllowed(['GET'])
@@ -126,30 +129,24 @@ def viewProfile(request):
 def editBid(request):
     if request.method == 'PUT':
         pk = QueryDict(request.body).get('item')
-        bid = Bid.objects.filter(item=pk).order_by('price').first()
-        print(bid.price)
-        print(bid.id)
+        bid = Bid.objects.filter(item_id=pk).order_by('price').last()
+        oldPrice = 0
+        if bid != None:
+            oldPrice = bid.price
+        finalPrice = oldPrice
         newPrice = float(QueryDict(request.body).get('price'))
-        if newPrice > bid.price:
+        if newPrice > oldPrice:
             userId = QueryDict(request.body).get('userid')
             user = SiteUsers.objects.get(id=userId)
             item = Item.objects.get(pk=pk)
-            b = Bid(price=newPrice, user= user, item= item)
+            b = Bid(price=newPrice, user=user, item_id=pk)
             b.save()
+            finalPrice = newPrice
             error = None
         else:
             error = 'Bid is lower than current price'
         return JsonResponse({
-            'price': b.price,
+            'price': finalPrice,
+            'error': error
         })
     return HttpResponse("Not a PUT request")
-
-# highest_bid = Bid.objects.filter(
-#     item=pk
-# ).aggregate(highestbid=Max('price'))['highestbid']
-# Bid.objects.filter(item=pk, price=highest_bid)
-
-# max_marks = Student.objects.filter(
-#     subject='Maths'
-# ).aggregate(maxmarks=Max('marks'))['maxmarks']
-# Student.objects.filter(subject='Maths', marks=max_marks)

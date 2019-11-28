@@ -6,15 +6,22 @@
 <ul id="itemList">
 </ul>
 <script>
-  const createListItem = (data, expired=false) => {
-    const {title, id} = data;
-    const formattedDate = Date(data.endDate);
+  const createListItem = (item, bids, expired=false) => {
+    const {title, id} = item;
+    const formattedDate = new Date(item.endDate).toLocaleString();
+    let highestBid = 0
+    for (let i =0; i < bids.length; i++) {
+      const bid = bids[i];
+      if (id === bid.item_id && bid.price > highestBid) {
+        highestBid = bid.price
+      }
+    }
     return `<div class="col-md-3 text-center" id='item-list'>
                 <li class="media" style="maxwidth=50px">
-                  <img src="media/${data.picture}" alt="${title}" height="200" width="200"/>
+                  <img src="media/${item.picture}" alt="${title}" height="200" width="200"/>
                   <h2>${title}</h2>
-                  <p>Description: ${data.description}</p>
-                  <p>${expired ? 'Winning' : 'Current'} bid: £<span id="currentbid${id}">${data.price}</span></p>
+                  <p>Description: ${item.description}</p>
+                  <p>${expired ? 'Winning' : 'Current'} bid: £<span id="currentbid${id}">${highestBid}</span></p>
                   <p>Auction end: ${formattedDate}</p>
                   ${!expired ? `<form>
                     {% csrf_token %}
