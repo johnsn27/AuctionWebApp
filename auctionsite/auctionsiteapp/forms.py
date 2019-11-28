@@ -14,6 +14,11 @@ class SignUpForm(UserCreationForm):
 
 class PostItemForm(forms.ModelForm):
     endDate = forms.DateField(initial=datetime.date.today)
+    title = forms.CharField(widget=forms.Textarea(attrs={'cols': 30, 'rows': 1}))
+    description = forms.CharField(widget=forms.Textarea(attrs={'cols': 30, 'rows': 2}))
+
     class Meta:
         model = Item
         fields = ['title', 'description', 'picture', 'price', 'endDate']
+
+
