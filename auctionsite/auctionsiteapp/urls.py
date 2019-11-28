@@ -9,7 +9,6 @@ urlpatterns = [
     path('buy', views.BuyView.as_view(), name="buy"),
     path('expired', views.ExpiredView.as_view(), name="expired"),
     path('sell', views.SellView.as_view(), name="sell"),
-    path('search', views.SearchView.as_view(), name="search"),
     path('createuser', views.createUser, name="createuser"),
     path('signup', views.signup, name="signup"),
     path('getitems', views.HomePageView.as_view(), name="getitems"),

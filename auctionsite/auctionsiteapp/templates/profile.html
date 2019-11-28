@@ -5,18 +5,22 @@
   <div class="text-center">
     {% if user.is_authenticated %}
       <h1>{% block title %} Profile{% endblock %}</h1>
-      <p>Hi <span id="showUsername">{{ user.username }}</span></p>
+      <p id="showUsername">Username: {{ user }}</p>
       <p>Email: {{ user.email }}</p>
       <p>Date of Birth: {{ user.siteusers.dateOfBirth }}</p>
+      <br>
       <form>
         {% csrf_token %}
-        Change username
+        Change Username:
+        <br>
         <input type="text" placeholder="new username" id="username"/>
       </form>
+      <br>
       <button id="changeUsernameBtn">
         Change
       </button>
       <p id='error'></p>
+      <br>
       <p><a href="{% url 'password_reset' %}">Reset Password</a></p>
     {% else %}
       Login to view your profile.
@@ -37,7 +41,7 @@ $(() => {
         newUsername: $('#username').val()
       },
       success: (data) => {
-        $('#showUsername').text(data.username);
+        $('#showUsername').text("Username: " + data.username);
       },
       error: (data) => {
         $('#error').text('Username is already in use')
