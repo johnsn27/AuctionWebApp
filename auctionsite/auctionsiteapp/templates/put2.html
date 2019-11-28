@@ -34,10 +34,11 @@
     var priceVal = $('#price').val();
     $.ajax({
       type: 'PUT',
-      url: `/put3/${pk}`,
+      url: "{% url 'editBid' %}",
       headers: {"X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()},
       data: {
         price: priceVal,
+        item: pk
       },
       success: function (data) {
         document.getElementById("post-form").reset();

@@ -45,6 +45,10 @@ class AuctionView(ListView):
     model = Item
     template_name = 'auction.html'
 
+class ClosedAuctionView(ListView):
+    model = Item
+    template_name = 'closed-auction.html'
+
 
 def items_json(request):
     if (request.method == 'GET'):
@@ -121,21 +125,11 @@ def createUser(request):
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
 
-
-def viewListings(request):
-    items = Item.objects.all()
-    context = {
-        'items': items,
-    }
-    return render(request, 'listings.html', {'items': items})
-
-
 def viewProfile(request):
     context = {
         'user': request.user
     }
     return render(request, 'profile.html', context)
-
 
 class put1(ListView):
     model = Item
@@ -145,8 +139,9 @@ class put2(ListView):
     model = Item
     template_name = 'put2.html'
 
-def editBid(request, pk):
+def editBid(request):
     if request.method == 'PUT':
+        pk = QueryDict(request.body).get('id')
         item = Item.objects.get(pk=pk)
         newPrice = float(QueryDict(request.body).get('price'))
         if newPrice > item.price:
