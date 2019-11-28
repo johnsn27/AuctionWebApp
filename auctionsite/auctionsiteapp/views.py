@@ -9,6 +9,7 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect, QueryD
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, TemplateView
 from django.urls import reverse_lazy
 from django.db.models import Q
@@ -27,13 +28,14 @@ class ExpiredView(ListView):
     model = Item
     template_name = 'expired_list.html'
 
-
+@method_decorator(login_required, name='dispatch')
 class SellView(CreateView):
     model = Item
     form_class = PostItemForm
     template_name = 'sell_item.html'
     success_url = 'sell'
 
+@method_decorator(login_required, name='dispatch')
 class WonView(ListView):
     model = Item
     template_name = 'won_items.html'
@@ -59,6 +61,7 @@ def changeUsername(request):
                 'username': user.username
             })
 
+@method_decorator(login_required, name='dispatch')
 class BuyView(TemplateView):
     template_name = 'buy_items.html'
 
@@ -129,7 +132,7 @@ def createUser(request):
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
 
-
+@login_required
 def viewProfile(request):
     context = {
         'user': request.user
