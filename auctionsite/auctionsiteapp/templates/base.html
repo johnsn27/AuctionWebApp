@@ -18,11 +18,16 @@
           <a class="navbar-brand" href="{% url 'auctionsiteapp:getitems' %}"><span class="glyphicon glyphicon-home"></span></a>
         </div>
         <ul class="nav navbar-nav navbar-left">
-          <li><a href="/">Buy now</a></li>
-          <li><a href="{% url 'auctionsiteapp:auction' %}">Auction</a></li>
-          <li><a href="{% url 'auctionsiteapp:expired' %}">Expired Listings</a></li>
-          <li><a href="{% url 'auctionsiteapp:postitem' %}">Post Item</a></li>
-          <li><a href="{% url 'auctionsiteapp:search' %}">Search Item</a></li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Auctions
+                <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="{% url 'auctionsiteapp:auction' %}">Buy</a></li>
+                  <li><a href="{% url 'auctionsiteapp:expired' %}">Expired</a></li>
+                  <li><a href="{% url 'auctionsiteapp:postitem' %}">Sell</a></li>
+                  <li><a href="{% url 'auctionsiteapp:search' %}">Search</a></li>
+                </ul>
+            </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'auctionsiteapp:getuser' %}">Users</a></li>

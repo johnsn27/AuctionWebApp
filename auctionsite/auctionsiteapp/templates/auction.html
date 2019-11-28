@@ -3,15 +3,17 @@
 {% block content %}
 <div class="container-fluid">
   <h1 class="text-center">Auction Item</h1>
-  <div align="center"><a href="closedauction"><button>View Closed Auctions</button></a></div>
+  <div class="text-center"><a href="closedauction"><button>View Closed Auctions</button></a></div>
   <div class="row">
       {% for item in object_list %}
-      <div class="col-md-3" id='item-list' align="center">
-        <h2>{{ item.title }}</h2>
-        <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
-        <p>Current bid: £{{item.price}}</p>
-        <p>Auction end: {{item.endDate}}</p>
-        <input type="button" onclick="window.location.href = '/put2/{{ item.id }}';" value="Make Bid"/>
+      <div class="col-md-3" id='item-list'>
+          <div class="text-center">
+            <h2>{{ item.title }}</h2>
+            <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
+            <p>Current bid: £{{item.price}}</p>
+            <p>Auction end: {{item.endDate}}</p>
+            <input type="button" onclick="window.location.href = '/put2/{{ item.id }}';" value="Make Bid"/>
+          </div>
       </div>
     {% endfor %}
   </div>
