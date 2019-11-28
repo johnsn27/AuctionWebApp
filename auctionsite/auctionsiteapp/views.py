@@ -40,10 +40,11 @@ class SellView(CreateView):
     success_url = reverse_lazy('')
 
 class BuyView(ListView):
+    model = Item
     template_name = 'buy-items.html'
 
     def get_context_data(self, **kwargs):
-        context = super(AuctionView, self).get_context_data(**kwargs)
+        context = super(BuyView, self).get_context_data(**kwargs)
         context['siteusers'] = SiteUsers.objects.all()
         context['items'] = Item.objects.all()
         return context
