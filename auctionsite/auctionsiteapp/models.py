@@ -14,13 +14,10 @@ class Item(models.Model):
     title = models.TextField()
     description = models.TextField()
     picture = models.ImageField(upload_to='images/')
-    price = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     endDate = models.DateTimeField()
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    user = models.TextField()
 
     def __str__(self):
         return self.title
 
-
-class Orders(models.Model):
-    userId = models.ForeignKey(SiteUsers, on_delete=models.CASCADE)
-    productId = models.ForeignKey(Item, on_delete=models.CASCADE)
