@@ -6,20 +6,24 @@
 <ul id="itemList">
 </ul>
 <script>
-  const createListItem = (data) => {
-    const {title} = data;
+  const createListItem = (data, expired=false) => {
+    const {title, id} = data;
     const formattedDate = Date(data.endDate);
-    return `<div class="col-md-3" id='item-list'>
-              <div class="text-center">
+    return `<div class="col-md-3 text-center" id='item-list'>
                 <li class="media" style="maxwidth=50px">
-                          <img src="media/${data.picture}" alt="${title}" height="200" width="200"/>
-                          <div class="media-body">
-                            <h2>${title}</h2>
-                            <p>Description: ${data.description}</p>
-                            <p>Price: ${data.price}</p>
-                            <p>Ends: ${formattedDate}</p>
-                          </div>
-                        </li>
+                  <img src="media/${data.picture}" alt="${title}" height="200" width="200"/>
+                  <h2>${title}</h2>
+                  <p>Description: ${data.description}</p>
+                  <p>${expired ? 'Winning' : 'Current'} bid: £<span id="currentbid${id}">${data.price}</span></p>
+                  <p>Auction end: ${formattedDate}</p>
+                  ${!expired ? `<form>
+                    {% csrf_token %}
+                      <label>Price</label>
+                      <input id="price${id}" type="text" name="price" placeholder="0">
+                  </form>
+                  <button class="bidButton" id="bidButton${id}">Submit Bid</button>
+                  <p id='error${id}'>&nbsp</p>` : ''}
+                </li>
               </div>`;
   };
 </script>
