@@ -41,7 +41,7 @@ def changeUsername(request):
         try:
             User.objects.get(username=newUsername)
             raise ValidationError(('Username in use'), code='NAME_IN_USE')
-        except User.DoesNotExist: 
+        except User.DoesNotExist:
             user.username = newUsername
             user.save()
             return JsonResponse({
@@ -141,3 +141,6 @@ def editBid(request):
             'error': error
         })
     return HttpResponse("Not a PUT request")
+
+def winningItems(request):
+    

@@ -17,5 +17,7 @@ urlpatterns = [
     path('profile', views.viewProfile, name='profile'),
     path('editBid', views.editBid, name="editBid"),
     path('changeusername', views.changeUsername, name="changeUsername")
+    # path('winningItems', views.winningItems, name="winningItems")
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
