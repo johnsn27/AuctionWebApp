@@ -2,6 +2,7 @@
 
 {% block form %}
 <div class="container">
+  <span id="userId" class="hidden">{{ user.id }}</span>
   <div class="text-center">
     <h1>Search for an Item</h1>
     <form id='searchForm'>
@@ -11,29 +12,6 @@
         Search
       </button>
     </form>
-    {% for item in items %}
-      <div class="col-md-3 text-center" id='item-list'>
-        <h2>{{ item.title }}</h2>
-        <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
-        {% for bid in bids %}
-          {% if bid.item_id == item.id %}
-            {% if forloop.last %}
-              <p>Current bid: £<span id="currentbid">{{bid.price}}</span></p>
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-        <p>Auction end: {{item.endDate}}</p>
-        <form>
-          {% csrf_token %}
-          <div>
-            <label>Price</label>
-            <input id="price{{ item.id }}" type="text" name="price" placeholder="0">
-          </div>
-        </form>
-        <button class="bidButton" id="bidButton{{ item.id }}">Submit Bid</button>
-        <p id='error{{ item.id }}'></p>
-      </div>
-    {% endfor %}
   </div>
 </div>
 {% endblock %}
@@ -49,7 +27,15 @@
         $("#itemList").empty();
         for (let i=0; i<data.items.length; i++) {
           const item = data.items[i];
-          $("#itemList").append(createListItem(item, false));
+          let highestBid = 0
+          for (let i =0; i < data.bids.length; i++) {
+            const bid = data.bids[i];
+            console.log(`item: ${item.id} bid: ${bid.item_id}`);
+            if (item.id === bid.item_id && bid.price > highestBid) {
+              highestBid = bid.price
+            }
+          }
+          $("#itemList").append(createListItem(item, highestBid, false));
         }
       }
     });
@@ -70,7 +56,7 @@
       const btnClicked = obj.currentTarget.id;
       const targetPrice = btnClicked.replace('bidButton', 'price');
       const pk = btnClicked.replace('bidButton', '');
-      const userId = {{ user.id }};
+      const userId = $('#userId').text();
       $.ajax({
         type: 'PUT',
         url: "{% url 'auctionsiteapp:editBid' %}",
@@ -81,21 +67,16 @@
           userid: userId
         },
         success: (data) => {
-          // bid = parseFloat(data.price).toFixed(2);
-          // $(`#currentbid${pk}`).text(bid);
-          // if (data.error) {
-          //   $(`#error${pk}`).text(data.error);
-          // } else {
-          //   $(`#error${pk}`).empty('&nbsp');
-          // }
+          bid = parseFloat(data.price).toFixed(2);
+          $(`#currentbid${pk}`).text(bid);
+          if (data.error) {
+            $(`#error${pk}`).text(data.error);
+          } else {
+            $(`#error${pk}`).empty('&nbsp');
+          }
         }
       })
     })
   })
 </script>
 {% endblock %}
-
-
-<!-- success: (data) => {
-  $('#showUsername').text("Username: " + data.username);
-}, -->
