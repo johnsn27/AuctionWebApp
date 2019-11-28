@@ -5,11 +5,13 @@
   <h1 class="text-center">Items for Sale</h1>
   <div class="row">
     {% for item in object_list %}
-    <div class="col-md-3" align="center">
-      <h2>{{ item.title }}</h2>
-      <img src="{{ item.picture.url }}" alt="{{ item.title }}"  height="200" width="200">
-      <p>Current price: £{{item.price}}</p>
-      <p>{{item.description}}</p>
+    <div class="col-md-3">
+        <div class="text-center">
+          <h2>{{ item.title }}</h2>
+          <img src="{{ item.picture.url }}" alt="{{ item.title }}"  height="200" width="200">
+          <p>Current price: £{{item.price}}</p>
+          <p>{{item.description}}</p>
+        </div>
     </div>
     {% endfor %}
   </div>
