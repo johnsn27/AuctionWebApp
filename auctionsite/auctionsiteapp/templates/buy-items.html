@@ -11,7 +11,7 @@
       <div class="col-md-3 text-center" id='item-list'>
         <h2>{{ item.title }}</h2>
         <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
-        <p>Current bid: £<span id="currentbid">{{item.price}}</span></p>
+        <p>Current bid: £<span id="currentbid{{ item.id }}">{{item.price}}</span></p>
         <p>Auction end: {{item.endDate}}</p>
         <form>
           {% csrf_token %}
@@ -21,7 +21,7 @@
           </div>
         </form>
         <button class="bidButton" id="bidButton{{ item.id }}">Submit Bid</button>
-        <p id='error'></p>
+        <p id='error{{ item.id }}'></p>
       </div>
     {% endfor %}
   </div>
@@ -43,14 +43,11 @@ $(() => {
       success: (data) => {
         $(`#${targetPrice}`).val('');
         bid = parseFloat(data.price).toFixed(2);
-        if (bid == null) {
-          bid = 0.00;
-        }
-        $('#currentbid').text(bid);
+        $(`#currentbid${pk}`).text(bid);
         if (data.error) {
-          $('#error').text(data.error);
+          $(`#error${pk}`).text(data.error);
         } else {
-          $('#error').empty();
+          $(`#error${pk}`).empty();
         }
       }
     })

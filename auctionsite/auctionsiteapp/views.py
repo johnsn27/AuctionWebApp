@@ -134,6 +134,7 @@ def editBid(request):
         pk = QueryDict(request.body).get('item')
         item = Item.objects.get(pk=pk)
         newPrice = float(QueryDict(request.body).get('price'))
+        error = None
         if newPrice > item.price:
             item.price = newPrice
             item.save()
