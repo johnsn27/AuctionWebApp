@@ -1,0 +1,32 @@
+{% extends 'item_list.html' %}
+
+{% block form %}
+<div class="container">
+    <h1 class="text-center">Won</h1>
+    <div class="row">
+
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+  $(() => {
+    $(() => {
+      $.ajax({
+        url: "{% url 'auctionsiteapp:itemsjson' %}",
+        data: {expired: true},
+        success: (data) => {
+          $("#itemList").empty();
+          for (let i=0; i<data.items.length; i++) {
+            const item = data.items[i];
+            $("#itemList").append(createListItem(item, true));
+          }
+        }
+      });
+    });
+  })
+  </script>
+{% endblock %}

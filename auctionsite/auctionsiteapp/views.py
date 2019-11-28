@@ -27,6 +27,16 @@ class ExpiredView(ListView):
     model = Item
     template_name = 'expired_list.html'
 
+class WonView(ListView):
+    template_name = 'won_items.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(WonView, self).get_context_data(**kwargs)
+        context['siteusers'] = SiteUsers.objects.values()
+        context['items'] = Item.objects.values()
+        context['bids'] = Bid.objects.values()
+        return context
+
 
 class SellView(CreateView):
     model = Item
@@ -143,6 +153,4 @@ def editBid(request):
             'price': b.price,
         })
     return HttpResponse("Not a PUT request")
-
-def winningItems(request):
 

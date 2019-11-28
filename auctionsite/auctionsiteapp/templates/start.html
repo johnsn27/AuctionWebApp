@@ -9,19 +9,4 @@
   {% if user.is_authenticated %}
     <p>You can also access your profile page on the top right, where you can update your username and reset your password via email along with viewing other account information.</p>
   {% endif %}
-
-  <h1 class="text-center">Your Items</h1>
-  <div class="row">
-    {% for item in object_list %}
-    <div class="col-md-3">
-        <div class="text-center">
-          <h2>{{ item.title }}</h2>
-          <img src="{{ item.picture.url }}" alt="{{ item.title }}"  height="200" width="200">
-          <p>Current price: £{{item.price}}</p>
-          <p>{{item.description}}</p>
-        </div>
-    </div>
-    {% endfor %}
-  </div>
-</div>
 {% endblock %}
