@@ -8,8 +8,7 @@
       <div class="col-md-3 text-center" id='item-list'>
         <h2>{{ item.title }}</h2>
         <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
-        <p>Description: {{item.description}}</p>
-        <p>Current bid: £<span id="currentbid{{ item.id }}">{{item.price}}</span></p>
+        <p>Current bid: £<span id="currentbid">{{item.price}}</span></p>
         <p>Auction end: {{item.endDate}}</p>
         <form>
           {% csrf_token %}
@@ -30,13 +29,15 @@ $(() => {
     const btnClicked = obj.currentTarget.id;
     const targetPrice = btnClicked.replace('bidButton','price');
     const pk = btnClicked.replace('bidButton','');
+    const userId = document.getElementById("userid").innerHTML
     $.ajax({
       type: 'PUT',
       url: "{% url 'auctionsiteapp:editBid' %}",
       headers: {"X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()},
       data: {
         price: $(`#${targetPrice}`).val(),
-        item: pk
+        item: pk,
+        userid: userId
       },
       success: (data) => {
         $(`#${targetPrice}`).val('');
