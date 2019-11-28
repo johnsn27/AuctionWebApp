@@ -39,7 +39,7 @@ class SellView(CreateView):
     model = Item
     form_class = PostItemForm
     template_name = 'sell_item.html'
-    success_url = reverse_lazy('')
+    success_url = 'sell'
 
 class BuyView(ListView):
     model = Item

@@ -5,19 +5,17 @@
   <h1 class="text-center">Buy Items</h1>
   <div class="row">
       {% for item in items %}
-      {% if user.is_authenticated %}
-        <p>{{ user.id }}</p>
-      {% endif %}
       <div class="col-md-3 text-center" id='item-list'>
         <h2>{{ item.title }}</h2>
         <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
+        <p>Description: {{item.description}}</p>
         <p>Current bid: £<span id="currentbid{{ item.id }}">{{item.price}}</span></p>
         <p>Auction end: {{item.endDate}}</p>
         <form>
           {% csrf_token %}
           <div>
             <label>Price</label>
-            <input id="price{{ item.id }}" type="text" name="price" placeholder="price">
+            <input id="price{{ item.id }}" type="text" name="price" placeholder="0">
           </div>
         </form>
         <button class="bidButton" id="bidButton{{ item.id }}">Submit Bid</button>
@@ -55,4 +53,3 @@ $(() => {
 })
 </script>
 {% endblock %}
-
