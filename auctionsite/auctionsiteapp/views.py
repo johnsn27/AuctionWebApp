@@ -73,7 +73,7 @@ def items_json(request):
         expired = request.GET.get('expired')
         if (expired):
             items = Item.objects.filter(endDate__lt=timezone.now())
-            bid = Bid.objects.filter(item=items)
+            bids = Bid.objects.all()
         else:
             items = Item.objects.filter(endDate__gt=timezone.now())
         if (query):
@@ -86,7 +86,7 @@ def items_json(request):
         else:
             return JsonResponse({
                 'items': list(items.values()),
-                'bid': list(bid.values())
+                'bid': list(bids.values()),
             })
     else:
         return HttpResponseNotAllowed(['GET'])

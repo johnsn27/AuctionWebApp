@@ -2,6 +2,12 @@
 
 {% block content %}
 <h1>{% block title %}{% endblock %}</h1>
+{% for item in items %}
+<p id="itemsaa"> {{ item  }}</p>
+{% for bid in bids %}
+  <p id="bidaa"> {{ bid  }}</p>
+  {% endfor %}
+  {% endfor %}
 {% block form %}{% endblock %}
 <ul id="itemList">
 </ul>
@@ -21,6 +27,9 @@
                       <label>Price</label>
                       <input id="price${id}" type="text" name="price" placeholder="0">
                   </form>
+                  {% for bid in bids %}
+  <p id="bidaa"> {{ bid  }}</p>
+  {% endfor %}
                   <button class="bidButton" id="bidButton${id}">Submit Bid</button>
                   <p id='error${id}'>&nbsp</p>` : ''}
                 </li>
