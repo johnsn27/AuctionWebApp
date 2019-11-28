@@ -5,20 +5,18 @@ from . import views
 
 app_name = 'auctionsiteapp'
 urlpatterns = [
-
-
+    path('', views.start, name="start"),
     path('buy', views.BuyView.as_view(), name="buy"),
     path('expired', views.ExpiredView.as_view(), name="expired"),
+    path('sell', views.SellView.as_view(), name="sell"),
+    path('search', views.SearchView.as_view(), name="search"),
 
 
 
-    path('', views.start, name="start"),
     path('createuser', views.createUser, name="createuser"),
     path('signup', views.signup, name="signup"),
     path('getitems', views.HomePageView.as_view(), name="getitems"),
     path('buy', views.BuyView.as_view(), name="buy"),
-    path('sell', views.SellView.as_view(), name="sell"),
-    path('search', views.SearchView.as_view(), name="search"),
     path('items', views.items_json, name='itemsjson'),
     path('profile', views.viewProfile, name='profile'),
     path('editBid', views.editBid, name="editBid"),
