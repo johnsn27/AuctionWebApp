@@ -5,13 +5,20 @@
   <h1 class="text-center">Buy Items</h1>
   <div class="row">
     {% if user.is_authenticated %}
-    <p id="userid" style="color: white">{{ user.id }}</p>
+      <p id="userid">{{ user.id }}</p>
     {% endif %}
     {% for item in items %}
+    <!-- <p id="bidaa">{{ bid.price }}</p> -->
     <div class="col-md-3 text-center" id='item-list'>
       <h2>{{ item.title }}</h2>
       <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
-      <p>Current bid: £<span id="currentbid">{{item.price}}</span></p>
+      {% for bid in bids %}
+      {% if bid.item_id == item.id %}
+      {% if forloop.last %}
+      <p>Current bid: £<span id="currentbid">{{bid.price}}</span></p>
+      {% endif %}
+      {% endif %}
+      {% endfor %}
       <p>Auction end: {{item.endDate}}</p>
       <form>
         {% csrf_token %}
