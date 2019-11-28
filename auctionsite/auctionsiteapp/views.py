@@ -33,27 +33,20 @@ class ExpiredView(ListView):
     template_name = 'expired_list.html'
 
 
-class CreatePostView(CreateView):
+class SellView(CreateView):
     model = Item
     form_class = PostItemForm
-    template_name = 'post_item.html'
+    template_name = 'sell_item.html'
     success_url = reverse_lazy('')
 
-
-class AuctionView(TemplateView):
-    template_name = 'auction.html'
+class BuyView(ListView):
+    template_name = 'buy-items.html'
 
     def get_context_data(self, **kwargs):
         context = super(AuctionView, self).get_context_data(**kwargs)
         context['siteusers'] = SiteUsers.objects.all()
         context['items'] = Item.objects.all()
         return context
-
-
-class ClosedAuctionView(ListView):
-    model = Item
-    template_name = 'closed-auction.html'
-
 
 def items_json(request):
     if (request.method == 'GET'):
@@ -97,15 +90,6 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
-
-
-def getUser(request):
-    users = SiteUsers.objects.order_by('-id')[:5]
-    context = {
-        'users': users,
-    }
-    return render(request, 'get_users.html', context)
-
 
 def createUser(request):
     if request.method == 'POST':

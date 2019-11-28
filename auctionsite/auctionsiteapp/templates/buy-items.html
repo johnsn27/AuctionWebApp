@@ -2,14 +2,13 @@
 
 {% block content %}
 <div class="container-fluid">
-  <h1 class="text-center">Auction Item</h1>
-  <div class="text-center"><a href="closedauction"><button>View Closed Auctions</button></a></div>
+  <h1 class="text-center">Buy Items</h1>
   <div class="row">
       {% for item in items %}
       {% if user.is_authenticated %}
-      <p>{{ user.id }}</p>
+        <p>{{ user.id }}</p>
       {% endif %}
-      <div class="col-md-3" id='item-list' align="center">
+      <div class="col-md-3 text-center" id='item-list'>
         <h2>{{ item.title }}</h2>
         <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
         <p>Current bid: £<span id="currentbid">{{item.price}}</span></p>

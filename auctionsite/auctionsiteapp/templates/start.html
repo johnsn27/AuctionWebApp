@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container-fluid text-center">
   {% if user.is_authenticated %}
-    Welcome {{ user.username }}!
+    <h1>Welcome {{ user.username }}!</h1>
   {% endif %}
+    <p>On this site you can bid for items, view expired items, sell items and search for items. This is all accessible through the 'Actions' dropdown in the navigation bar.</p>
+  {% if user.is_authenticated %}
+    <p>You can also access your profile page on the top right, where you can update your username and reset your password via email along with viewing other account information.</p>
+  {% endif %}
+</div>
 {% endblock %}
