@@ -15,7 +15,7 @@
     <nav class="navbar navbar-inverse">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href='/'><span class="glyphicon glyphicon-home"></span></a>
+          <a class="navbar-brand" href="{% url 'auctionsiteapp:start' %}"><span class="glyphicon glyphicon-home"></span></a>
         </div>
         <ul class="nav navbar-nav navbar-left">
             <li class="dropdown">
@@ -23,8 +23,9 @@
                 <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><a href="{% url 'auctionsiteapp:buy' %}">Buy</a></li>
-                  <li><a href="{% url 'auctionsiteapp:expired' %}">Expired</a></li>
+                  <li><a href="{% url 'auctionsiteapp:won' %}">Won</a></li>
                   <li><a href="{% url 'auctionsiteapp:sell' %}">Sell</a></li>
+                  <li><a href="{% url 'auctionsiteapp:expired' %}">Expired</a></li>
                 </ul>
             </li>
         </ul>
