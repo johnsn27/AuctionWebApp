@@ -11,6 +11,29 @@
         Search
       </button>
     </form>
+    {% for item in items %}
+      <div class="col-md-3 text-center" id='item-list'>
+        <h2>{{ item.title }}</h2>
+        <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
+        {% for bid in bids %}
+          {% if bid.item_id == item.id %}
+            {% if forloop.last %}
+              <p>Current bid: £<span id="currentbid">{{bid.price}}</span></p>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        <p>Auction end: {{item.endDate}}</p>
+        <form>
+          {% csrf_token %}
+          <div>
+            <label>Price</label>
+            <input id="price{{ item.id }}" type="text" name="price" placeholder="0">
+          </div>
+        </form>
+        <button class="bidButton" id="bidButton{{ item.id }}">Submit Bid</button>
+        <p id='error{{ item.id }}'></p>
+      </div>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}
@@ -58,17 +81,21 @@
           userid: userId
         },
         success: (data) => {
-          $(`#${targetPrice}`).val('');
-          bid = parseFloat(data.price).toFixed(2);
-          $(`#currentbid${pk}`).text(bid);
-          if (data.error) {
-            $(`#error${pk}`).text(data.error);
-          } else {
-            $(`#error${pk}`).empty('&nbsp');
-          }
+          // bid = parseFloat(data.price).toFixed(2);
+          // $(`#currentbid${pk}`).text(bid);
+          // if (data.error) {
+          //   $(`#error${pk}`).text(data.error);
+          // } else {
+          //   $(`#error${pk}`).empty('&nbsp');
+          // }
         }
       })
     })
   })
 </script>
 {% endblock %}
+
+
+<!-- success: (data) => {
+  $('#showUsername').text("Username: " + data.username);
+}, -->

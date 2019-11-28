@@ -15,9 +15,13 @@ class Item(models.Model):
     description = models.TextField()
     picture = models.ImageField(upload_to='images/')
     endDate = models.DateTimeField()
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     user = models.TextField()
 
     def __str__(self):
         return self.title
 
+class Bid(models.Model):
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    user = models.ForeignKey(SiteUsers, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)

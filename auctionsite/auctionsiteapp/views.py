@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from django.db.models import Max
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from .forms import PostItemForm, SignUpForm
-from .models import SiteUsers, Item
+from .models import SiteUsers, Item, Bid
 
 
 class HomePageView(ListView):
@@ -53,8 +53,9 @@ class BuyView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(BuyView, self).get_context_data(**kwargs)
-        context['siteusers'] = SiteUsers.objects.all()
-        context['items'] = Item.objects.all()
+        context['siteusers'] = SiteUsers.objects.values()
+        context['items'] = Item.objects.values()
+        context['bids'] = Bid.objects.values()
         return context
 
 def items_json(request):
@@ -125,22 +126,23 @@ def viewProfile(request):
 def editBid(request):
     if request.method == 'PUT':
         pk = QueryDict(request.body).get('item')
-        item = Item.objects.get(pk=pk)
+        bid = Bid.objects.filter(item=pk).order_by('price').first()
+        print(bid.price)
+        print(bid.id)
         newPrice = float(QueryDict(request.body).get('price'))
-        userId = QueryDict(request.body).get('userid')
-        error = None
-        if newPrice > item.price:
-            item.price = newPrice
-            item.user = userId
-            item.save()
+        if newPrice > bid.price:
+            userId = QueryDict(request.body).get('userid')
+            user = SiteUsers.objects.get(id=userId)
+            item = Item.objects.get(pk=pk)
+            b = Bid(price=newPrice, user= user, item= item)
+            b.save()
+            error = None
         else:
             error = 'Bid is lower than current price'
         return JsonResponse({
-            'id': item.id,
-            'price': item.price,
-            'error': error
+            'price': b.price,
         })
     return HttpResponse("Not a PUT request")
 
 def winningItems(request):
-    
+
