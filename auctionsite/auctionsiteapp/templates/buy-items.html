@@ -1,38 +1,53 @@
-{% extends 'base.html' %}
+{% extends 'item_list.html' %}
 
-{% block content %}
-<div class="container-fluid">
-  <h1 class="text-center">Buy Items</h1>
-  <div class="row">
-    {% if user.is_authenticated %}
-    <p id="userid" style="color: white">{{ user.id }}</p>
-    {% endif %}
-    {% for item in items %}
-    <div class="col-md-3 text-center" id='item-list'>
-      <h2>{{ item.title }}</h2>
-      <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
-      <p>Current bid: £<span id="currentbid">{{item.price}}</span></p>
-      <p>Auction end: {{item.endDate}}</p>
-      <form>
-        {% csrf_token %}
-        <div>
-          <label>Price</label>
-          <input id="price{{ item.id }}" type="text" name="price" placeholder="0">
-        </div>
-      </form>
-      <button class="bidButton" id="bidButton{{ item.id }}">Submit Bid</button>
-      <p id='error{{ item.id }}'></p>
-    </div>
-    {% endfor %}
+{% block form %}
+<div class="container">
+  <div class="text-center">
+    <h1>Search for an Item</h1>
+    <form id='searchForm'>
+      {% csrf_token %}
+      <input name='query' type='text' placeholder='Search'/>
+      <button id="searchBtn" type="button">
+        Search
+      </button>
+    </form>
   </div>
 </div>
+{% endblock %}
+{% block scripts %}
 <script>
   $(() => {
-    $('.bidButton').click((obj) => {
+    $(document).on("keydown", "form", (event) => {
+        return event.key != "Enter";
+      });
+    $.ajax({
+      url: "{% url 'auctionsiteapp:itemsjson' %}",
+      success: (data) => {
+        $("#itemList").empty();
+        for (let i=0; i<data.items.length; i++) {
+          const item = data.items[i];
+          $("#itemList").append(createListItem(item, false));
+        }
+      }
+    });
+    $("#searchBtn").click(() => {
+      $.ajax({
+        url: "{% url 'auctionsiteapp:itemsjson' %}",
+        data: $("#searchForm").serializeArray(),
+        success: (data) => {
+          $("#itemList").empty();
+          for (let i=0; i<data.items.length; i++) {
+            const item = data.items[i];
+            $("#itemList").append(createListItem(item, false));
+          }
+        }
+      });
+    });
+    $('main').on('click', '.bidButton', (obj) => {
       const btnClicked = obj.currentTarget.id;
       const targetPrice = btnClicked.replace('bidButton', 'price');
       const pk = btnClicked.replace('bidButton', '');
-      const userId = document.getElementById("userid").innerHTML
+      const userId = {{ user.id }};
       $.ajax({
         type: 'PUT',
         url: "{% url 'auctionsiteapp:editBid' %}",
@@ -49,7 +64,7 @@
           if (data.error) {
             $(`#error${pk}`).text(data.error);
           } else {
-            $(`#error${pk}`).empty();
+            $(`#error${pk}`).empty('&nbsp');
           }
         }
       })

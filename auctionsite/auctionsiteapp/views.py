@@ -23,11 +23,6 @@ class HomePageView(ListView):
     template_name = 'get_items.html'
 
 
-class SearchView(ListView):
-    model = Item
-    template_name = 'item_search.html'
-
-
 class ExpiredView(ListView):
     model = Item
     template_name = 'expired_list.html'
