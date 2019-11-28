@@ -10,10 +10,14 @@
     const {title, id} = item;
     const formattedDate = new Date(item.endDate).toLocaleString();
     let highestBid = 0
+    let allBids = ""
     for (let i =0; i < bids.length; i++) {
       const bid = bids[i];
-      if (id === bid.item_id && bid.price > highestBid) {
+      if (id === bid.item_id) {
+        allBids = allBids + " " + parseFloat(bid.price).toFixed(2)
+        if (bid.price > highestBid) {
         highestBid = bid.price
+        }
       }
     }
     return `<div class="col-md-3 text-center" id='item-list'>
@@ -30,6 +34,9 @@
                   </form>
                   <button class="bidButton" id="bidButton${id}">Submit Bid</button>
                   <p id='error${id}'>&nbsp</p>` : ''}
+                  ${expired ? `
+                      <label>Bid ${allBids}</label>
+                      ` : ''}
                 </li>
               </div>`;
   };
