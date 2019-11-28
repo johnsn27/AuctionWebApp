@@ -4,53 +4,56 @@
 <div class="container-fluid">
   <h1 class="text-center">Buy Items</h1>
   <div class="row">
-      {% for item in items %}
-      <div class="col-md-3 text-center" id='item-list'>
-        <h2>{{ item.title }}</h2>
-        <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
-        <p>Current bid: £<span id="currentbid">{{item.price}}</span></p>
-        <p>Auction end: {{item.endDate}}</p>
-        <form>
-          {% csrf_token %}
-          <div>
-            <label>Price</label>
-            <input id="price{{ item.id }}" type="text" name="price" placeholder="0">
-          </div>
-        </form>
-        <button class="bidButton" id="bidButton{{ item.id }}">Submit Bid</button>
-        <p id='error{{ item.id }}'></p>
-      </div>
+    {% if user.is_authenticated %}
+    <p id="userid" style="color: white">{{ user.id }}</p>
+    {% endif %}
+    {% for item in items %}
+    <div class="col-md-3 text-center" id='item-list'>
+      <h2>{{ item.title }}</h2>
+      <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
+      <p>Current bid: £<span id="currentbid">{{item.price}}</span></p>
+      <p>Auction end: {{item.endDate}}</p>
+      <form>
+        {% csrf_token %}
+        <div>
+          <label>Price</label>
+          <input id="price{{ item.id }}" type="text" name="price" placeholder="0">
+        </div>
+      </form>
+      <button class="bidButton" id="bidButton{{ item.id }}">Submit Bid</button>
+      <p id='error{{ item.id }}'></p>
+    </div>
     {% endfor %}
   </div>
 </div>
 <script>
-$(() => {
-  $('.bidButton').click((obj) => {
-    const btnClicked = obj.currentTarget.id;
-    const targetPrice = btnClicked.replace('bidButton','price');
-    const pk = btnClicked.replace('bidButton','');
-    const userId = document.getElementById("userid").innerHTML
-    $.ajax({
-      type: 'PUT',
-      url: "{% url 'auctionsiteapp:editBid' %}",
-      headers: {"X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()},
-      data: {
-        price: $(`#${targetPrice}`).val(),
-        item: pk,
-        userid: userId
-      },
-      success: (data) => {
-        $(`#${targetPrice}`).val('');
-        bid = parseFloat(data.price).toFixed(2);
-        $(`#currentbid${pk}`).text(bid);
-        if (data.error) {
-          $(`#error${pk}`).text(data.error);
-        } else {
-          $(`#error${pk}`).empty();
+  $(() => {
+    $('.bidButton').click((obj) => {
+      const btnClicked = obj.currentTarget.id;
+      const targetPrice = btnClicked.replace('bidButton', 'price');
+      const pk = btnClicked.replace('bidButton', '');
+      const userId = document.getElementById("userid").innerHTML
+      $.ajax({
+        type: 'PUT',
+        url: "{% url 'auctionsiteapp:editBid' %}",
+        headers: { "X-CSRFToken": $("[name=csrfmiddlewaretoken]").val() },
+        data: {
+          price: $(`#${targetPrice}`).val(),
+          item: pk,
+          userid: userId
+        },
+        success: (data) => {
+          $(`#${targetPrice}`).val('');
+          bid = parseFloat(data.price).toFixed(2);
+          $(`#currentbid${pk}`).text(bid);
+          if (data.error) {
+            $(`#error${pk}`).text(data.error);
+          } else {
+            $(`#error${pk}`).empty();
+          }
         }
-      }
+      })
     })
   })
-})
 </script>
 {% endblock %}
