@@ -6,9 +6,16 @@
 <ul id="itemList">
 </ul>
 <script>
-  const createListItem = (item, highestBid, expired=false) => {
+  const createListItem = (item, bids, expired=false) => {
     const {title, id} = item;
     const formattedDate = Date(item.endDate);
+    let highestBid = 0
+    for (let i =0; i < bids.length; i++) {
+      const bid = bids[i];
+      if (id === bid.item_id && bid.price > highestBid) {
+        highestBid = bid.price
+      }
+    }
     return `<div class="col-md-3 text-center" id='item-list'>
                 <li class="media" style="maxwidth=50px">
                   <img src="media/${item.picture}" alt="${title}" height="200" width="200"/>

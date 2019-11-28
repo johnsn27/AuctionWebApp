@@ -27,15 +27,7 @@
         $("#itemList").empty();
         for (let i=0; i<data.items.length; i++) {
           const item = data.items[i];
-          let highestBid = 0
-          for (let i =0; i < data.bids.length; i++) {
-            const bid = data.bids[i];
-            console.log(`item: ${item.id} bid: ${bid.item_id}`);
-            if (item.id === bid.item_id && bid.price > highestBid) {
-              highestBid = bid.price
-            }
-          }
-          $("#itemList").append(createListItem(item, highestBid, false));
+          $("#itemList").append(createListItem(item, data.bids, false));
         }
       }
     });
