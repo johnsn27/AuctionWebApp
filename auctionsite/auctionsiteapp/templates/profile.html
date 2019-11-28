@@ -5,14 +5,45 @@
   <div class="text-center">
     {% if user.is_authenticated %}
       <h1>{% block title %} Profile{% endblock %}</h1>
-      <p>Hi {{ user.username }}</p>
+      <p>Hi <span id="showUsername">{{ user.username }}</span></p>
       <p>Email: {{ user.email }}</p>
       <p>Date of Birth: {{ user.siteusers.dateOfBirth }}</p>
-
+      <form>
+        {% csrf_token %}
+        Change username
+        <input type="text" placeholder="new username" id="username"/>
+      </form>
+      <button id="changeUsernameBtn">
+        Change
+      </button>
+      <p id='error'></p>
       <p><a href="{% url 'password_reset' %}">Reset Password</a></p>
     {% else %}
       Login to view your profile.
     {% endif %}
   </div>
 </div>
+<script>
+$(() => {
+  $(document).on("keydown", "form", (event) => {
+    return event.key != "Enter";
+  });
+  $('#changeUsernameBtn').click(() => {
+    $.ajax({
+      type: 'PUT',
+      url: "{% url 'auctionsiteapp:changeUsername' %}",
+      headers: {"X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()},
+      data: {
+        newUsername: $('#username').val()
+      },
+      success: (data) => {
+        $('#showUsername').text(data.username);
+      },
+      error: (data) => {
+        $('#error').text('Username is already in use')
+      }
+    })
+  })
+})
+</script>
 {% endblock %}
