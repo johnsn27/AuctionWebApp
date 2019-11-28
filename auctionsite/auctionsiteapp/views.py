@@ -9,7 +9,6 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect, QueryD
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView
 from django.urls import reverse_lazy
 from django.db.models import Q
@@ -39,7 +38,6 @@ class CreatePostView(CreateView):
     form_class = PostItemForm
     template_name = 'post_item.html'
     success_url = reverse_lazy('')
-
 
 class AuctionView(ListView):
     model = Item
@@ -74,15 +72,10 @@ def items_json(request):
 
 
 def start(request):
-    users = SiteUsers.objects.order_by('-id')[:5]
-    context = {
-        'posts': users,
-    }
-    return render(request, 'start.html', context)
+    return render(request, 'start.html')
 
 
 def signup(request):
-    users = SiteUsers.objects.order_by('-id')[:5]
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -93,7 +86,7 @@ def signup(request):
             dateOfBirth = form.cleaned_data.get('dateOfBirth')
             SiteUsers.objects.create(user=user, dateOfBirth=dateOfBirth)
             login(request, user)
-            return render(request, 'start.html', {'users': users})
+            return render(request, 'start.html')
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
@@ -108,10 +101,6 @@ def getUser(request):
 
 
 def createUser(request):
-    users = SiteUsers.objects.order_by('-id')[:5]
-    context = {
-        'users': users,
-    }
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -120,19 +109,10 @@ def createUser(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return render(request, 'start.html', {'users': users})
+            return render(request, 'start.html')
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
-
-
-def viewListings(request):
-    items = Item.objects.all()
-    context = {
-        'items': items,
-    }
-    return render(request, 'listings.html', {'items': items})
-
 
 def viewProfile(request):
     context = {
@@ -140,54 +120,19 @@ def viewProfile(request):
     }
     return render(request, 'profile.html', context)
 
-
 def editBid(request):
-    put = QueryDict(request.body)
-    item_id = put.get('item-id')
-    item = Item.objects.get(id=item_id)
-    newPrice = put.get('item-price')
-    error = None
-    if newPrice > item.price:
-        item.price = newPrice
-        item.save()
-    else:
-        error = 'Bid is lower than current price'
-
-    return JsonResponse({
-        'id': item.id,
-        'price': item.price,
-        'error': error
-    })
-
-class put1(ListView):
-    model = Item
-    template_name = 'put1.html'
-
-class put2(ListView):
-    model = Item
-    template_name = 'put2.html'
-
-def put3(request, pk):
     if request.method == 'PUT':
-        obj = Item.objects.get(pk=pk)
+        pk = QueryDict(request.body).get('item')
+        item = Item.objects.get(pk=pk)
         newPrice = float(QueryDict(request.body).get('price'))
-        if newPrice > obj.price:
-            obj.price = newPrice
-            obj.save()
+        if newPrice > item.price:
+            item.price = newPrice
+            item.save()
         else:
             error = 'Bid is lower than current price'
-        obj.save()
         return JsonResponse({
-            'id': obj.id,
-            'price': obj.price,
+            'id': item.id,
+            'price': item.price,
             'error': error
         })
-    return HttpResponse("Not a put request")
-
-# def editBid(request, pk):
-#     if request.method != 'PUT':
-#         obj = Post.objects.get(pk=pk)
-#         obj.price = request.POST.get('item-price')
-#         obj.save()
-#         return HttpResponse("Post with pk %s updated" % pk, content_type='application/json')
-#     return HttpResponse("Not a put request")
+    return HttpResponse("Not a PUT request")

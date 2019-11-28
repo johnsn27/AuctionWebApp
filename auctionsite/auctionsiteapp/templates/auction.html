@@ -6,17 +6,54 @@
   <div class="text-center"><a href="closedauction"><button>View Closed Auctions</button></a></div>
   <div class="row">
       {% for item in object_list %}
-      <div class="col-md-3" id='item-list'>
-          <div class="text-center">
-            <h2>{{ item.title }}</h2>
-            <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
-            <p>Current bid: £{{item.price}}</p>
-            <p>Auction end: {{item.endDate}}</p>
-            <input type="button" onclick="window.location.href = '/put2/{{ item.id }}';" value="Make Bid"/>
+      <div class="col-md-3" id='item-list' align="center">
+        <h2>{{ item.title }}</h2>
+        <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
+        <p>Current bid: £<span id="currentbid">{{item.price}}</span></p>
+        <p>Auction end: {{item.endDate}}</p>
+        <form>
+          {% csrf_token %}
+          <div>
+            <label>Price</label>
+            <input id="price{{ item.id}}" type="text" name="price" placeholder="price">
           </div>
+        </form>
+        <button class="bidButton" id="bidButton{{ item.id }}">Submit Bid</button>
+        <p id='error'></p>
       </div>
     {% endfor %}
   </div>
 </div>
+<script>
+$(() => {
+  $('.bidButton').click((obj) => {
+    const btnClicked = obj.currentTarget.id;
+    const targetPrice = btnClicked.replace('bidButton','price');
+    const pk = btnClicked.replace('bidButton','');
+    $.ajax({
+      type: 'PUT',
+      url: "{% url 'auctionsiteapp:editBid' %}",
+      headers: {"X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()},
+      data: {
+        price: $(`#${targetPrice}`).val(),
+        item: pk
+      },
+      success: (data) => {
+        $(`#${targetPrice}`).val('');
+        bid = parseFloat(data.price).toFixed(2);
+        if (bid == null) {
+          bid = 0.00;
+        }
+        $('#currentbid').text(bid);
+        if (data.error) {
+          $('#error').text(data.error);
+        } else {
+          $('#error').empty();
+        }
+      }
+    })
+  })
+})
+</script>
 {% endblock %}
 
