@@ -11,12 +11,11 @@
         <img src="{{ item.picture.url }}" alt="{{ item.title }}" height="200" width="200">
         <p>Current bid: £<span id="currentbid">{{item.price}}</span></p>
         <p>Auction end: {{item.endDate}}</p>
-        <form id="bidForm{{ item.id }}">
+        <form>
           {% csrf_token %}
           <div>
-            <input type="text" value="{{ item.id }}" class="hidden" name="item"/>
             <label>Price</label>
-            <input type="text" name="price" placeholder="price">
+            <input id="price{{ item.id}}" type="text" name="price" placeholder="price">
           </div>
         </form>
         <button class="bidButton" id="bidButton{{ item.id }}">Submit Bid</button>
@@ -29,15 +28,18 @@
 $(() => {
   $('.bidButton').click((obj) => {
     const btnClicked = obj.currentTarget.id;
-    const targetForm = btnClicked.replace('Button','Form');
+    const targetPrice = btnClicked.replace('bidButton','price');
     const pk = btnClicked.replace('bidButton','');
     $.ajax({
       type: 'PUT',
       url: "{% url 'auctionsiteapp:editBid' %}",
       headers: {"X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()},
-      data: $(`#${targetForm}`).serializeArray(),
+      data: {
+        price: $(`#${targetPrice}`).val(),
+        item: pk
+      },
       success: (data) => {
-        $(`#${targetForm}`).reset();
+        $(`#${targetPrice}`).val('');
         bid = parseFloat(data.price).toFixed(2);
         if (bid == null) {
           bid = 0.00;

@@ -135,13 +135,9 @@ class put1(ListView):
     model = Item
     template_name = 'put1.html'
 
-class put2(ListView):
-    model = Item
-    template_name = 'put2.html'
-
 def editBid(request):
     if request.method == 'PUT':
-        pk = QueryDict(request.body).get('id')
+        pk = QueryDict(request.body).get('item')
         item = Item.objects.get(pk=pk)
         newPrice = float(QueryDict(request.body).get('price'))
         if newPrice > item.price:
