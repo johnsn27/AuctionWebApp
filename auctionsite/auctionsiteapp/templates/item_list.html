@@ -6,6 +6,16 @@
 <ul id="itemList">
 </ul>
 <script>
+  const getUserById = (pk, itemId) => {
+    let username = 'Unknown'
+    $.ajax({
+      url: `{% url 'auctionsiteapp:getuser' %}`,
+      data: {pk: pk},
+      success: (data) => {
+        $(`#currentWinner${itemId}`).text(data.username);
+      }
+    });
+  };
   const createListItem = (item, bids, expired=false) => {
     const {title, id} = item;
     const formattedDate = new Date(item.endDate).toLocaleString();
@@ -16,16 +26,18 @@
       if (id === bid.item_id) {
         allBids = allBids + " " + parseFloat(bid.price).toFixed(2)
         if (bid.price > highestBid) {
-        highestBid = bid.price
+        highestBid = bid
         }
       }
     }
+    getUserById(highestBid.user_id, id)
     return `<div class="col-md-3 text-center" id='item-list'>
                 <li class="media" style="maxwidth=50px">
                   <img src="media/${item.picture}" alt="${title}" height="200" width="200"/>
                   <h2>${title}</h2>
                   <p>Description: ${item.description}</p>
-                  <p>${expired ? 'Winning' : 'Current'} bid: £<span id="currentbid${id}">${highestBid}</span></p>
+                  <p>${expired ? 'Winning' : 'Current'} bid: £<span id="currentbid${id}">${highestBid.price || 0}</span></p>
+                  <p>${expired ? '' : 'Current '}Winner: <span id="currentWinner${id}">Unknown</span></p>
                   <p>Auction end: ${formattedDate}</p>
                   ${!expired ? `<form>
                     {% csrf_token %}

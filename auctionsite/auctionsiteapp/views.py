@@ -8,6 +8,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect, QueryDict
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, TemplateView
@@ -94,6 +96,19 @@ def items_json(request):
                 'items': list(items.values()),
                 'bids': bids
             })
+    else:
+        return HttpResponseNotAllowed(['GET'])
+
+def getUser_json(request):
+    if (request.method == 'GET'):
+        try:
+            pk = request.GET.get('pk')
+            user = User.objects.get(pk=pk)
+            return JsonResponse({
+                'username': user.username
+            })
+        except User.DoesNotExist:
+            raise ValidationError(('Username not found'), code='USER_NOT_FOUND')
     else:
         return HttpResponseNotAllowed(['GET'])
 
