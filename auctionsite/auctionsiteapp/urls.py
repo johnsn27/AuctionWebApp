@@ -14,6 +14,7 @@ urlpatterns = [
     path('getitems', views.HomePageView.as_view(), name="getitems"),
     path('buy', views.BuyView.as_view(), name="buy"),
     path('items', views.items_json, name='itemsjson'),
+    path('getuser', views.getUser_json, name='getuser'),
     path('profile', views.viewProfile, name='profile'),
     path('editBid', views.editBid, name="editBid"),
     path('changeusername', views.changeUsername, name="changeUsername"),

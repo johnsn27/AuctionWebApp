@@ -8,6 +8,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect, QueryDict
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, TemplateView
@@ -18,6 +20,12 @@ from django.utils import timezone
 from .forms import PostItemForm, SignUpForm
 from .models import SiteUsers, Item, Bid
 
+def getUsername(pk):
+    try:
+        user = User.objects.get(pk=pk)
+        return user.username
+    except:
+        return None
 
 class HomePageView(ListView):
     model = Item
@@ -105,6 +113,19 @@ def items_json(request):
     else:
         return HttpResponseNotAllowed(['GET'])
 
+def getUser_json(request):
+    if (request.method == 'GET'):
+        pk = request.GET.get('pk')
+        username = getUsername(pk)
+        if username != None:
+            return JsonResponse({
+                'username': username
+            })
+        else:
+            raise ValidationError(('Username not found'), code='USER_NOT_FOUND')
+    else:
+        return HttpResponseNotAllowed(['GET'])
+
 
 def start(request):
     return render(request, 'start.html')
@@ -155,8 +176,10 @@ def editBid(request):
         pk = QueryDict(request.body).get('item')
         bid = Bid.objects.filter(item_id=pk).order_by('price').last()
         oldPrice = 0
+        currentWinner = 'Unknown'
         if bid != None:
             oldPrice = bid.price
+            currentWinner = getUsername(bid.user_id)
         finalPrice = oldPrice
         newPrice = float(QueryDict(request.body).get('price'))
         if newPrice > oldPrice:
@@ -166,11 +189,13 @@ def editBid(request):
             b = Bid(price=newPrice, user=user, item_id=pk)
             b.save()
             finalPrice = newPrice
+            currentWinner = getUsername(b.user_id)
             error = None
         else:
             error = 'Bid is lower than current price'
         return JsonResponse({
             'price': finalPrice,
+            'currentWinner': currentWinner,
             'error': error
         })
     return HttpResponse("Not a PUT request")

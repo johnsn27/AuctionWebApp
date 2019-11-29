@@ -61,6 +61,7 @@
         success: (data) => {
           bid = parseFloat(data.price).toFixed(2);
           $(`#currentbid${pk}`).text(bid);
+          $(`#currentWinner${pk}`).text(data.currentWinner);
           if (data.error) {
             $(`#error${pk}`).text(data.error);
           } else {
