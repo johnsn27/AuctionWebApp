@@ -6,8 +6,6 @@
 <ul id="itemList">
 </ul>
 <script>
-  const createListItem = (item, bids, users, expired = false) => {
-    const { title, id } = item;
   const getUserById = (pk, itemId) => {
     let username = 'Unknown'
     $.ajax({
@@ -18,31 +16,24 @@
       }
     });
   };
+  
   const createListItem = (item, bids, users, expired=false) => {
     const {title, id} = item;
     const formattedDate = new Date(item.endDate).toLocaleString();
     let highestBid = 0
-    let highestBidUserId = 0
     let allBids = ""
-    let highestBidName = ""
-    for (let i = 0; i < bids.length; i++) {
+    for (let i =0; i < bids.length; i++) {
       const bid = bids[i];
       if (id === bid.item_id) {
         allBids = allBids + " " + parseFloat(bid.price).toFixed(2)
         if (bid.price > highestBid) {
-          highestBid = bid.price
-          highestBidUserId = bid.user_id
+        highestBid = bid
         }
       }
     }
-    for (let i = 0; i < users.length; i++) {
-      if (highestBidUserId === users[i].id) {
-        highestBidName = users[i].id
-      }
-    }
-    highestBid = bid
-  getUserById(highestBid.user_id, id)
-  return `<div class="col-md-3 text-center" id='item-list'>
+
+    getUserById(highestBid.user_id, id)
+    return `<div class="col-md-3 text-center" id='item-list'>
                 <li class="media" style="maxwidth=50px">
                   <img src="media/${item.picture}" alt="${title}" height="200" width="200"/>
                   <h2>${title}</h2>
@@ -60,9 +51,6 @@
                   ${expired ? `
                       <label>Bid ${allBids}</label>
                       ` : ''}
-                  ${expired ? `
-                  <label>Winner user: ${highestBidName}</label>
-                  ` : ''}
                 </li>
               </div>`;
   };
