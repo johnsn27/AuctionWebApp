@@ -20,12 +20,14 @@ from django.utils import timezone
 from .forms import PostItemForm, SignUpForm
 from .models import SiteUsers, Item, Bid
 
+
 def getUsername(pk):
     try:
         user = User.objects.get(pk=pk)
         return user.username
     except:
         return None
+
 
 class HomePageView(ListView):
     model = Item
@@ -91,6 +93,8 @@ def items_json(request):
         expired = request.GET.get('expired')
         bids = list(Bid.objects.values())
         users = list(SiteUsers.objects.values())
+        user = User.objects.get(pk=request.user.id)
+        userItems = list(Bid.objects.filter(user=user.id).values())
         if (expired):
             items = Item.objects.filter(endDate__lt=timezone.now())
         else:
@@ -102,16 +106,19 @@ def items_json(request):
                     Q(title__icontains=query) | Q(description__icontains=query)
                 ).values()),
                 'bids': bids,
-                'users': users
+                'users': users,
+                'userItems': userItems
             })
         else:
             return JsonResponse({
                 'items': list(items.values()),
                 'bids': bids,
-                'users': users
+                'users': users,
+                'userItems': userItems
             })
     else:
         return HttpResponseNotAllowed(['GET'])
+
 
 def getUser_json(request):
     if (request.method == 'GET'):
@@ -122,7 +129,8 @@ def getUser_json(request):
                 'username': username
             })
         else:
-            raise ValidationError(('Username not found'), code='USER_NOT_FOUND')
+            raise ValidationError(('Username not found'),
+                                  code='USER_NOT_FOUND')
     else:
         return HttpResponseNotAllowed(['GET'])
 

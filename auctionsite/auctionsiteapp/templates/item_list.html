@@ -10,30 +10,36 @@
     let username = 'Unknown'
     $.ajax({
       url: `{% url 'auctionsiteapp:getuser' %}`,
-      data: {pk: pk},
+      data: { pk: pk },
       success: (data) => {
         $(`#currentWinner${itemId}`).text(data.username);
       }
     });
   };
-  
-  const createListItem = (item, bids, users, expired=false) => {
-    const {title, id} = item;
+
+  const createListItem = (item, bids, users, userItems, expired = false, won, expiredPage) => {
+    const { title, id } = item;
     const formattedDate = new Date(item.endDate).toLocaleString();
     let highestBid = 0
     let allBids = ""
-    for (let i =0; i < bids.length; i++) {
+    for (let i = 0; i < bids.length; i++) {
       const bid = bids[i];
       if (id === bid.item_id) {
         allBids = allBids + " " + parseFloat(bid.price).toFixed(2)
         if (bid.price > highestBid) {
-        highestBid = bid
+          highestBid = bid
         }
       }
     }
+    for (let i = 0; i < bids.length; i++) {
+      if (bids[1].user_id == highestBid.user_id) {
+        won = true
+      }
+    }
+
 
     getUserById(highestBid.user_id, id)
-    return `<div class="col-md-3 text-center" id='item-list'>
+      return `<div class="col-md-3 text-center" id='item-list'>
                 <li class="media" style="maxwidth=50px">
                   <img src="media/${item.picture}" alt="${title}" height="200" width="200"/>
                   <h2>${title}</h2>
@@ -48,8 +54,11 @@
                   </form>
                   <button class="bidButton" id="bidButton${id}">Submit Bid</button>
                   <p id='error${id}'>&nbsp</p>` : ''}
-                  ${expired ? `
+                  ${expired && !won ? `
                       <label>Bid ${allBids}</label>
+                      ` : ''}
+                  ${expired && won ? `
+                    <button class="buyButton" id="buyButton${id}">Buy Item</button>
                       ` : ''}
                 </li>
               </div>`;

@@ -5,6 +5,7 @@
   <div class="text-center">
     {% if user.is_authenticated %}
       <h1>{% block title %} Profile{% endblock %}</h1>
+      <p>ID: {{ user.id }}</p>
       <p id="showUsername">Username: {{ user }}</p>
       <p>Email: {{ user.email }}</p>
       <p>Date of Birth: {{ user.siteusers.dateOfBirth }}</p>
