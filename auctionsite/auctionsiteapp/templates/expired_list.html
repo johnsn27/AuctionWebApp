@@ -22,7 +22,7 @@
           $("#itemList").empty();
           for (let i=0; i<data.items.length; i++) {
             const item = data.items[i];
-            $("#itemList").append(createListItem(item, data.bids, true));
+            $("#itemList").append(createListItem(item, data.bids, data.users, true));
           }
         }
       });

@@ -6,20 +6,32 @@
 <ul id="itemList">
 </ul>
 <script>
-  const createListItem = (item, bids, expired=false) => {
-    const {title, id} = item;
+  const createListItem = (item, bids, users, expired = false) => {
+    // console.log(users.id)
+    // console.log(bids.user_id)
+    const { title, id } = item;
     const formattedDate = new Date(item.endDate).toLocaleString();
     let highestBid = 0
+    let highestBidUserId = 0
     let allBids = ""
-    for (let i =0; i < bids.length; i++) {
+    let highestBidName = ""
+    for (let i = 0; i < bids.length; i++) {
       const bid = bids[i];
       if (id === bid.item_id) {
         allBids = allBids + " " + parseFloat(bid.price).toFixed(2)
         if (bid.price > highestBid) {
-        highestBid = bid.price
+          highestBid = bid.price
+          highestBidUserId = bid.user_id
         }
       }
     }
+    for (let i = 0; i < users.length; i++) {
+      if (highestBidUserId === users[i].id) {
+        highestBidName = users[i].id
+      }
+    }
+    console.log('highestBidName', highestBidName)
+
     return `<div class="col-md-3 text-center" id='item-list'>
                 <li class="media" style="maxwidth=50px">
                   <img src="media/${item.picture}" alt="${title}" height="200" width="200"/>
@@ -37,6 +49,9 @@
                   ${expired ? `
                       <label>Bid ${allBids}</label>
                       ` : ''}
+                  ${expired ? `
+                  <label>Winner user: ${highestBidName}</label>
+                  ` : ''}
                 </li>
               </div>`;
   };

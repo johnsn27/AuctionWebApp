@@ -28,12 +28,14 @@ class ExpiredView(ListView):
     model = Item
     template_name = 'expired_list.html'
 
+
 @method_decorator(login_required, name='dispatch')
 class SellView(CreateView):
     model = Item
     form_class = PostItemForm
     template_name = 'sell_item.html'
     success_url = 'sell'
+
 
 @method_decorator(login_required, name='dispatch')
 class WonView(ListView):
@@ -46,6 +48,7 @@ class WonView(ListView):
         context['items'] = Item.objects.values()
         context['bids'] = Bid.objects.values()
         return context
+
 
 def changeUsername(request):
     if (request.method == 'PUT'):
@@ -61,6 +64,7 @@ def changeUsername(request):
                 'username': user.username
             })
 
+
 @method_decorator(login_required, name='dispatch')
 class BuyView(TemplateView):
     template_name = 'buy_items.html'
@@ -72,11 +76,13 @@ class BuyView(TemplateView):
         context['bids'] = Bid.objects.values()
         return context
 
+
 def items_json(request):
     if (request.method == 'GET'):
         query = request.GET.get('query')
         expired = request.GET.get('expired')
         bids = list(Bid.objects.values())
+        users = list(SiteUsers.objects.values())
         if (expired):
             items = Item.objects.filter(endDate__lt=timezone.now())
         else:
@@ -87,12 +93,14 @@ def items_json(request):
                     Q(endDate__gt=timezone.now()),
                     Q(title__icontains=query) | Q(description__icontains=query)
                 ).values()),
-                'bids': bids
+                'bids': bids,
+                'users': users
             })
         else:
             return JsonResponse({
                 'items': list(items.values()),
-                'bids': bids
+                'bids': bids,
+                'users': users
             })
     else:
         return HttpResponseNotAllowed(['GET'])
@@ -118,6 +126,7 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
+
 def createUser(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -131,6 +140,7 @@ def createUser(request):
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
+
 
 @login_required
 def viewProfile(request):
